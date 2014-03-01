@@ -1,0 +1,13 @@
+{
+    "name": "kilhage/sugarcrm-repair",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Emil Kilhage",
+            "email": "emilkilhage@gmail.com"
+        }
+    ],
+    "require": {
+
+    }
+}
