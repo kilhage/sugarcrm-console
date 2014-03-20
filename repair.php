@@ -63,9 +63,11 @@ if (flag("help", "h")) {
 
 require __DIR__ . '/_init.php';
 
+TrackerManager::getInstance()->pause();
+
 require_once('include/MVC/SugarApplication.php');
 
-global $current_module, $currentModule, $moduleList;
+global $current_module, $currentModule, $moduleList, $current_user;
 $currentModule = $current_module = 'Administration';
 $_REQUEST['module'] = $_POST['module'] = $_GET['module'] = $current_module;
 $_REQUEST['action'] = $_POST['action'] = $_GET['action'] = 'repair';
@@ -76,6 +78,9 @@ $app->controller = ControllerFactory::getController($current_module);;
 $app->loadLanguages();
 $app->loadGlobals();
 $app->loadLicense();
+
+$current_user = new User();
+$current_user->getSystemUser();
 
 require_once('modules/Administration/QuickRepairAndRebuild.php');
 require_once 'include/utils/layout_utils.php';
