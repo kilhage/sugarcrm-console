@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+set_time_limit(0);
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+define('sugarEntry', true);
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Kilhage\SugarCRM\Console\Application as SugarConsole;
+use Kilhage\SugarCRM\Application as SugarApp;
+
+$input = new ArgvInput($argv);
+
+$sugar = new SugarApp();
+
+$console = new SugarConsole($sugar);
+
+$console->run($input);
