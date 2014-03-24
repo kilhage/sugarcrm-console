@@ -8,59 +8,9 @@ namespace Kilhage\SugarCRM;
 class Application
 {
 
-    private $sugar_path;
     private $current_user;
     private $app;
     private $db;
-
-    public function init()
-    {
-        $include_path = $this->getSugarPath();
-
-        set_include_path($include_path);
-        chdir($include_path);
-
-        require_once('include/entryPoint.php');
-    }
-
-    /**
-     * @param mixed $sugar_path
-     */
-    public function setSugarPath($sugar_path)
-    {
-        $this->sugar_path = $sugar_path;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSugarPath()
-    {
-        if (empty($this->sugar_path)) {
-            $include_path = $_SERVER['PWD'] . '/';
-
-            while (!file_exists($include_path . 'sugar_version.php') && $include_path != '//')
-            {
-                if (file_exists($include_path . 'docroot/sugar_version.php'))
-                {
-                    $include_path .= 'docroot/';
-                }
-                else
-                {
-                    $include_path = dirname($include_path) . '/';
-                }
-            }
-
-            if ($include_path == '//')
-            {
-                die("Could not find base path \n");
-            }
-
-            $this->sugar_path = rtrim($include_path, '/');
-        }
-
-        return $this->sugar_path;
-    }
 
     /**
      * @param int $current_user_id

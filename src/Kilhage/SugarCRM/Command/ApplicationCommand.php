@@ -28,15 +28,7 @@ abstract class ApplicationCommand extends Command implements SugarAwareCommand
 
         $sugar = $this->getSugar();
 
-        $sugar_path = $input->getOption("sugar_path");
-        if (!empty($sugar_path)) {
-            $sugar_path = realpath($sugar_path);
-            $sugar->setSugarPath($sugar_path);
-        }
-
-        $sugar->init();
-
-        $current_user_id = $this->getOption("current_user");
+        $current_user_id = $input->getOption("current_user");
         if (!empty($current_user_id)) {
             $sugar->loadCurrentUser($current_user_id);
         } else {

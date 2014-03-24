@@ -8,25 +8,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class DatabaseCommand extends QuickRepairAndRebuildCommand
+class RepairAllCommand extends QuickRepairAndRebuildCommand
 {
 
     protected function configure()
     {
         parent::configure();
-        $this->setName("repair:db")
-            ->setDescription("Repairs the database");
+        $this->setName("repair:all")
+            ->setDescription("Repairs the extensions");
     }
 
     protected function getActions()
     {
         return array (
-            "repairDatabase"
+            "clearAll"
         );
     }
 
     protected function getMessage()
     {
-        return "Repairing Database";
+        return "Running Quick Repair & Rebuild";
     }
+
 }

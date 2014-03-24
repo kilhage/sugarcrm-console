@@ -1,19 +1,21 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command;
+namespace Kilhage\SugarCRM\Command\Scheduler;
 
+use Kilhage\SugarCRM\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Emil Kilhage
  */
-class RepairCommand extends RepairAbstractCommand
+class ListCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("repair");
+        $this->setName("scheduler:list")
+            ->setDescription("Lists all schedulers");
     }
 
     /**
@@ -24,7 +26,7 @@ class RepairCommand extends RepairAbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Running Quick Repair & Rebuild");
+        $output->writeln("Executing Scheduler");
         $output->writeln("Done");
     }
 

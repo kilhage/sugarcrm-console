@@ -3,16 +3,26 @@
 
 set_time_limit(0);
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+$base_path = realpath(__DIR__ . '/../../../..');
+$include_path = "$base_path/docroot";
 
+if (!file_exists("$include_path/sugar_version.php")
+    || !file_exists("$base_path/vendor/autoload.php")) {
+    throw new Exception("Can't initialize");
+}
+
+include_once "$base_path/vendor/autoload.php";
+
+set_include_path($include_path);
+chdir($include_path);
 define('sugarEntry', true);
+require_once('include/entryPoint.php');
 
 use Symfony\Component\Console\Input\ArgvInput;
 use Kilhage\SugarCRM\Console\Application as SugarConsole;
 use Kilhage\SugarCRM\Application as SugarApp;
 
 $input = new ArgvInput($argv);
-
 $sugar = new SugarApp();
 
 $console = new SugarConsole($sugar);
