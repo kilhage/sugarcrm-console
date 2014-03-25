@@ -1,6 +1,6 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Scheduler;
+namespace Kilhage\SugarCRM\Command\Scheduler\Job\Logs;
 
 use Kilhage\SugarCRM\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,8 +14,8 @@ class ListCommand extends ApplicationCommand
 
     protected function configure()
     {
-        $this->setName("scheduler:list")
-            ->setDescription("Lists all scheduler job");
+        $this->setName("scheduler:job:logs:list")
+            ->setDescription("Displays the status of a scheduler job");
     }
 
     /**

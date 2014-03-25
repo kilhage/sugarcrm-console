@@ -9,13 +9,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class ListCommand extends ApplicationCommand
+class EnableCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("scheduler:list")
-            ->setDescription("Lists all scheduler job");
+        $this->setName("scheduler:enable")
+            ->setDescription("Enables the scheduler");
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Scheduler;
+namespace Kilhage\SugarCRM\Command\Scheduler\Job;
 
 use Kilhage\SugarCRM\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,13 +9,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class ConfigureCommand extends ApplicationCommand
+class EnableCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("scheduler:configure")
-            ->setDescription("Configures a scheduler");
+        $this->setName("scheduler:job:enable")
+            ->setDescription("Enables a scheduler job");
     }
 
     /**
@@ -26,7 +26,7 @@ class ConfigureCommand extends ApplicationCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Configuring Scheduler");
+        $output->writeln("");
         $output->writeln("Done");
     }
 

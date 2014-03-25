@@ -1,6 +1,6 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Scheduler;
+namespace Kilhage\SugarCRM\Command\Scheduler\Job\Logs;
 
 use Kilhage\SugarCRM\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,13 +9,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class ListCommand extends ApplicationCommand
+class PruneCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("scheduler:list")
-            ->setDescription("Lists all scheduler job");
+        $this->setName("scheduler:job:logs:prune")
+            ->setDescription("Prunes scheduler job execution logs");
     }
 
     /**
