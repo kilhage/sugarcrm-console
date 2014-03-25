@@ -1,31 +1,59 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Kilhage\SugarCRM\Console\Application as SugarConsole;
+use Kilhage\SugarCRM\Application as SugarApp;
+
 set_time_limit(0);
 
 $base_path = realpath(__DIR__ . '/../../../..');
 $include_path = "$base_path/docroot";
 $autoload_path = "$base_path/vendor";
 
+// Check if the console is located inside a SugarCRM project
 if (!file_exists("$include_path/sugar_version.php")
     || !file_exists("$autoload_path/autoload.php")) {
+    // We are not, try to find the current base path..
+    $include_path = $_SERVER['PWD'] . '/';
 
+    while (!file_exists($include_path . 'sugar_version.php') && $include_path != '//')
+    {
+        if (file_exists($include_path . 'docroot/sugar_version.php'))
+        {
+            $include_path .= 'docroot/';
+        }
+        else
+        {
+            $include_path = dirname($include_path) . '/';
+        }
+    }
 
+    if ($include_path == '//')
+    {
+        throw new Exception("Could not find base path");
+    }
 
-    throw new Exception("Can't initialize");
+    $include_path = rtrim($include_path, '/');
+    $autoload_path = dirname(__DIR__) . "/vendor";
+
+    if (!file_exists("$autoload_path/autoload.php")) {
+        throw new Exception("vendor/autoload.php isn't generated");
+    }
 }
 
-include_once "$autoload_path/autoload.php";
-
+// Change directory to the current SugarCRM application that we work on
 set_include_path($include_path);
 chdir($include_path);
+
+// Initalize autoloading features
+require_once "$autoload_path/autoload.php";
+
+// Initialize SugarCRM
 define('sugarEntry', true);
 require_once('include/entryPoint.php');
 
-use Symfony\Component\Console\Input\ArgvInput;
-use Kilhage\SugarCRM\Console\Application as SugarConsole;
-use Kilhage\SugarCRM\Application as SugarApp;
-
+// Initalize and execute command
 $input = new ArgvInput($argv);
 $sugar = new SugarApp();
 
