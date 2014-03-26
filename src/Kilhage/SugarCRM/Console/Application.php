@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @author Emil Kilhage
@@ -52,10 +53,21 @@ class Application extends BaseApplication
      */
     private function registerCommands()
     {
-        $dir = dirname(__DIR__) . "/Command/";
-        $commands = $this->getFiles($dir);
+        $this->_addCommands(
+            dirname(dirname(dirname(__DIR__))) . "/",
+            dirname(__DIR__) . "/Command/"
+        );
+    }
 
-        foreach ($commands as $class_name => $file_path) {
+    /**
+     * @param array|\Symfony\Component\Console\Command\Command[] $prefix
+     * @param $dir
+     */
+    private function _addCommands($prefix, $dir)
+    {
+        $commands = $this->getFiles($prefix, $dir);
+
+        foreach ($commands as $class_name) {
             $refl = new \ReflectionClass($class_name);
 
             if (!$refl->isAbstract()) {
@@ -74,29 +86,24 @@ class Application extends BaseApplication
      * @param $path
      * @return array
      */
-    private function getFiles($path)
+    private function getFiles($prefix, $path)
     {
-        $path = rtrim($path, "/");
-        $files = scandir($path);
-        $files = array_diff($files, array('.', '..'));
+        $commands = array ();
+        $finder = new Finder();
+        $iterator = $finder
+            ->files()
+            ->name('*.php')
+            ->in($path);
 
-        $return = array ();
+        foreach ($iterator as $file) {
+            $file_path = $file->getRealpath();
+            $class_name = ltrim($file_path, $prefix);
+            $class_name = str_replace("/", "\\", rtrim($class_name, ".php"));
 
-        foreach ($files as $file) {
-            if (is_file("$path/$file")) {
-
-                $file_path = "$path/$file";
-
-                $class_name = ltrim($file_path, dirname(dirname(dirname(__DIR__))) . "/");
-                $class_name = str_replace("/", "\\", rtrim($class_name, ".php"));
-
-                $return[$class_name] = $file_path;
-            } elseif (is_dir("$path/$file")) {
-                $return = array_merge($return, $this->getFiles("$path/$file"));
-            }
+            $commands[] = $class_name;
         }
 
-        return $return;
+        return $commands;
     }
 
 }
