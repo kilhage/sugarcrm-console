@@ -18,7 +18,7 @@ try {
     if (!file_exists("$include_path/sugar_version.php")
         || !file_exists("$autoload_path/autoload.php")) {
         // We are not, try to find the current base path..
-        $include_path = $_SERVER['PWD'] . '/';
+        $include_path = $cwd . '/';
 
         while (!file_exists($include_path . 'sugar_version.php') && $include_path != '//')
         {
@@ -52,15 +52,17 @@ try {
     // Initalize autoloading features
     require_once "$autoload_path/autoload.php";
 
-    // Initialize SugarCRM
-    define('sugarEntry', true);
-    require_once('include/entryPoint.php');
-
     // Initalize and execute command
     $input = new ArgvInput($argv);
     $sugar = new SugarApp($include_path);
 
     $console = new SugarConsole($sugar);
+
+    if (!empty($argv[1]) && $console->isApplicationCommand($argv[1])) {
+        // Initialize SugarCRM
+        define('sugarEntry', true);
+        require_once('include/entryPoint.php');
+    }
 
     $console->run($input);
 } catch (\Exception $e) {

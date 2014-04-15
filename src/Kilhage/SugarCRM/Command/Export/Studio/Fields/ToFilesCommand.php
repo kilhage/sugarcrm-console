@@ -16,7 +16,7 @@ class ToFilesCommand extends ApplicationCommand
     protected function configure()
     {
         $this->setName("export:studio:fields:to-files")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Only print the sql's")
+            ->addOption("dry", null, InputOption::VALUE_NONE, "Only output the sql's that will be executed")
             ->addOption("remove-field-from-db", null, InputOption::VALUE_NONE, "Removes the field from the fields_meta_data if successful")
             ->addOption("output-content", null, InputOption::VALUE_NONE, "Outputs the content that will be written")
             ->setDescription("Exports Studio Fields To Files");

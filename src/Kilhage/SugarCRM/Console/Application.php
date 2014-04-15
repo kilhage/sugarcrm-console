@@ -2,6 +2,7 @@
 
 namespace Kilhage\SugarCRM\Console;
 
+use Kilhage\SugarCRM\Command\ApplicationCommand;
 use Kilhage\SugarCRM\Command\SugarAwareCommand;
 use Kilhage\SugarCRM\Application as Sugar;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -24,6 +25,11 @@ class Application extends BaseApplication
     private $sugar;
 
     /**
+     * @var array
+     */
+    private $commands = array ();
+
+    /**
      * @param Sugar $sugar
      */
     public function __construct(Sugar $sugar)
@@ -34,6 +40,8 @@ class Application extends BaseApplication
 
         $this->getDefinition()->addOption(new InputOption('--sugar_path', null, InputOption::VALUE_OPTIONAL, 'Path to SugarCRM Application'));
         $this->getDefinition()->addOption(new InputOption('--current_user', null, InputOption::VALUE_OPTIONAL, 'The current user id to run the script under'));
+
+        $this->registerCommands();
     }
 
     /**
@@ -43,8 +51,6 @@ class Application extends BaseApplication
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->registerCommands();
-
         return parent::doRun($input, $output);
     }
 
@@ -62,28 +68,71 @@ class Application extends BaseApplication
     /**
      * @param array|\Symfony\Component\Console\Command\Command[] $prefix
      * @param $dir
+     * @throws \LogicException
      */
     private function _addCommands($prefix, $dir)
     {
-        $commands = $this->getFiles($prefix, $dir);
+        $commandFiles = $this->getFiles($prefix, $dir);
 
-        foreach ($commands as $class_name) {
+        foreach ($commandFiles as $class_name) {
             $refl = new \ReflectionClass($class_name);
 
             if (!$refl->isAbstract()) {
                 $command = new $class_name();
+
+                if (!($command instanceof \Kilhage\SugarCRM\Command)) {
+                    throw new \LogicException();
+                }
 
                 if ($command instanceof SugarAwareCommand) {
                     $command->setSugar($this->sugar);
                 }
 
                 $this->add($command);
+
+                $this->commands[$command->getName()] = $command;
             }
         }
     }
 
     /**
+     * @return array
+     */
+    private function getCommands()
+    {
+        return $this->commands;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return \Kilhage\SugarCRM\Command
+     * @throws \LogicException
+     */
+    private function getCommand($name)
+    {
+        if (!isset($this->commands[$name])) {
+            throw new \LogicException();
+        }
+
+        return $this->commands[$name];
+    }
+
+    /**
+     * @param $command_name
+     *
+     * @return bool
+     */
+    public function isApplicationCommand($command_name)
+    {
+        $command = $this->getCommand($command_name);
+        return $command instanceof ApplicationCommand;
+    }
+
+    /**
+     * @param $prefix
      * @param $path
+     *
      * @return array
      */
     private function getFiles($prefix, $path)
