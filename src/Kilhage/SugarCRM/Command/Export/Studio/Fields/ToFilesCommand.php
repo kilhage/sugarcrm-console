@@ -93,8 +93,6 @@ PHP;
                     }
                 }
             }
-
-            break;
         }
 
         $output->writeln("Done");
