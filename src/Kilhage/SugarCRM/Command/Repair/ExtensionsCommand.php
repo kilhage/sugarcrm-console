@@ -29,4 +29,5 @@ class ExtensionsCommand extends QuickRepairAndRebuildCommand
     {
         return "Rebuilding Extensions";
     }
+
 }

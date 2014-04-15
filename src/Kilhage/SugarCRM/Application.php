@@ -8,9 +8,41 @@ namespace Kilhage\SugarCRM;
 class Application
 {
 
+    /**
+     * @var \User
+     */
     private $current_user;
+
+    /**
+     * @var \SugarApplication
+     */
     private $app;
+
+    /**
+     * @var \DBManager
+     */
     private $db;
+
+    /**
+     * @var string
+     */
+    private $app_path;
+
+    /**
+     * @param string $app_path
+     */
+    public function __construct($app_path)
+    {
+        $this->app_path = $app_path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppPath()
+    {
+        return $this->app_path;
+    }
 
     /**
      * @param int $current_user_id

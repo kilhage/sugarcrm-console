@@ -55,7 +55,7 @@ require_once('include/entryPoint.php');
 
 // Initalize and execute command
 $input = new ArgvInput($argv);
-$sugar = new SugarApp();
+$sugar = new SugarApp($include_path);
 
 $console = new SugarConsole($sugar);
 

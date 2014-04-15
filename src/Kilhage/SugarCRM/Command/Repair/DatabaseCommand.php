@@ -29,4 +29,5 @@ class DatabaseCommand extends QuickRepairAndRebuildCommand
     {
         return "Repairing Database";
     }
+
 }
