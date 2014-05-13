@@ -54,8 +54,9 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
         $this->getQuickRepairAndRebuild()->repairAndClearAll(
             $this->getActions(),
             $this->getActions(),
-            $auto_execute,
-            $show_output
+            true,
+            $show_output,
+            ''
         );
 
         $output->writeln("Done");
