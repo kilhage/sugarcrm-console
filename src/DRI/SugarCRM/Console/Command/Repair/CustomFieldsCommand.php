@@ -1,8 +1,8 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Repair;
+namespace DRI\SugarCRM\Console\Command\Repair;
 
-use Kilhage\SugarCRM\Command\ApplicationCommand;
+use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

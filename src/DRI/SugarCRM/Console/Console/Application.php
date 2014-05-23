@@ -1,10 +1,10 @@
 <?php
 
-namespace Kilhage\SugarCRM\Console;
+namespace DRI\SugarCRM\Console\Console;
 
-use Kilhage\SugarCRM\Command\ApplicationCommand;
-use Kilhage\SugarCRM\Command\SugarAwareCommand;
-use Kilhage\SugarCRM\Application as Sugar;
+use DRI\SugarCRM\Console\Command\ApplicationCommand;
+use DRI\SugarCRM\Console\Command\SugarAwareCommand;
+use DRI\SugarCRM\Console\Application as Sugar;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -80,7 +80,7 @@ class Application extends BaseApplication
             if (!$refl->isAbstract()) {
                 $command = new $class_name();
 
-                if (!($command instanceof \Kilhage\SugarCRM\Command)) {
+                if (!($command instanceof \DRI\SugarCRM\Console\Command)) {
                     throw new \LogicException();
                 }
 
@@ -106,7 +106,7 @@ class Application extends BaseApplication
     /**
      * @param string $name
      *
-     * @return \Kilhage\SugarCRM\Command
+     * @return \DRI\SugarCRM\Console\Command
      * @throws \LogicException
      */
     private function getCommand($name)

@@ -1,8 +1,8 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Module\Fields;
+namespace DRI\SugarCRM\Console\Command\Module\Fields;
 
-use Kilhage\SugarCRM\Command\ApplicationCommand;
+use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

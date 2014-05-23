@@ -1,8 +1,8 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command;
+namespace DRI\SugarCRM\Console\Command;
 
-use Kilhage\SugarCRM\Application as Sugar;
+use DRI\SugarCRM\Console\Application as Sugar;
 
 /**
  * @author Emil Kilhage

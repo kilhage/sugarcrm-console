@@ -1,6 +1,6 @@
 <?php
 
-namespace Kilhage\SugarCRM;
+namespace DRI\SugarCRM\Console;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;

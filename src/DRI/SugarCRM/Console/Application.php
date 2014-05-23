@@ -1,6 +1,6 @@
 <?php
 
-namespace Kilhage\SugarCRM;
+namespace DRI\SugarCRM\Console;
 
 /**
  * @author Emil Kilhage

@@ -2,8 +2,8 @@
 <?php
 
 use Symfony\Component\Console\Input\ArgvInput;
-use Kilhage\SugarCRM\Console\Application as SugarConsole;
-use Kilhage\SugarCRM\Application as SugarApp;
+use DRI\SugarCRM\Console\Console\Application as SugarConsole;
+use DRI\SugarCRM\Console\Application as SugarApp;
 
 set_time_limit(0);
 

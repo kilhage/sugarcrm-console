@@ -1,9 +1,9 @@
 <?php
 
-namespace Kilhage\SugarCRM\Command\Cache;
+namespace DRI\SugarCRM\Console\Command\Cache;
 
-use Kilhage\SugarCRM\Application as Sugar;
-use Kilhage\SugarCRM\Command;
+use DRI\SugarCRM\Console\Application as Sugar;
+use DRI\SugarCRM\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
