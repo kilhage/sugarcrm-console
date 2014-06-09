@@ -60,7 +60,7 @@ class Application extends BaseApplication
     private function registerCommands()
     {
         $this->_addCommands(
-            dirname(dirname(dirname(__DIR__))) . "/",
+            dirname(dirname(dirname(dirname(__DIR__)))) . "/",
             dirname(__DIR__) . "/Command/"
         );
     }
