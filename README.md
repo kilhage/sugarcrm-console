@@ -19,9 +19,69 @@ Pre requirements
 Installation
 ---------------------
 
-### Use as global console
+### Install as global console
 
-### Use inside project
+#### Checkout
+```sh
+git clone https://github.com/kilhage/sugarcrm-console sugarcrm-console
+cd sugarcrm-console
+```
+
+#### Install dependencies
+
+```sh
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
+```
+
+#### Install binary globally
+
+##### With rake
+```sh
+rake install:binary
+```
+
+##### Manually
+```sh
+ln -s bin/sugarcrm /usr/local/bin/sugarcrm
+```
+
+### Install inside project
+
+#### In project managed by composer
+
+```sh
+    .....
+    "repositories": [
+        ....
+        {
+            "url": "git@github.com:kilhage/sugarcrm-console.git",
+            "type": "git"
+        }
+        .....
+    ],
+    ......
+    "require": {
+        .....
+        "kilhage/sugarcrm-console": "dev-master",
+        .....
+    }
+    ....
+```
+
+#### As a submodule
+
+```sh
+git submodule add https://github.com/kilhage/sugarcrm-console sugarcrm-console
+cd sugarcrm-console
+```
+
+##### Install dependencies
+
+```sh
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
+```
 
 Usage
 ---------------------
