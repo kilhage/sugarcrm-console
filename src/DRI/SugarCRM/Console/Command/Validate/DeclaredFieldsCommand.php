@@ -1,6 +1,6 @@
 <?php
 
-namespace DRI\SugarCRM\Console\Command\Module\Fields;
+namespace DRI\SugarCRM\Console\Command\Validate;
 
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,14 +10,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class CheckDeclaredCommand extends ApplicationCommand
+class DeclaredFieldsCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("module:fields:check-declared")
+        $this->setName("validate:declared-fields")
             ->addArgument("preg", InputArgument::OPTIONAL, "Regular expression to field the modules checked")
-            ->setDescription("Check that all fields are declared in a modules bean");
+            ->setDescription("Validates that all fields are declared in a modules bean");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
