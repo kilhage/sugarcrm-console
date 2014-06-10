@@ -66,5 +66,9 @@ try {
 
     $console->run($input);
 } catch (\Exception $e) {
-    echo "{$e->getMessage()}\n";
+    if (in_array('--verbose', $argv) || in_array('-v', $argv) || in_array('-vv', $argv) || in_array('-vvv', $argv)) {
+        throw $e;
+    } else {
+        echo "{$e->getMessage()}\n";
+    }
 }

@@ -112,7 +112,7 @@ class Application extends BaseApplication
     private function getCommand($name)
     {
         if (!isset($this->commands[$name])) {
-            throw new \LogicException();
+            throw new \LogicException("Invalid command name: {$name}");
         }
 
         return $this->commands[$name];
