@@ -10,12 +10,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class DefinitionsCommand extends ApplicationCommand
+class GenerateCommand extends ApplicationCommand
 {
 
     protected function configure()
     {
-        $this->setName("generate:yaml:definitions")
+        $this->setName("module:vardefs:yml:generate")
             ->addArgument("moduleName", InputArgument::REQUIRED, "The name of the module that you want to add the yaml vardef file for")
             ->addArgument("fileName", InputArgument::OPTIONAL, "The name of the yaml vardef file that you want to add")
             ->setDescription("Generates yaml definition files into a module (Not implemented)");

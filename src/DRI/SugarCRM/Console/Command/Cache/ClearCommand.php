@@ -73,6 +73,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
     {
         $this->clearComponentsFiles();
         $this->clearJsGroupingFiles();
+        $this->clearLessFiles();
         $this->clearAutoloaderCache();
     }
 
@@ -115,6 +116,30 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
             $finder = new Finder();
             $files = $finder->files()
                 ->name("sugar_*.js")
+                ->in($directory);
+
+            foreach ($files as $file)
+            {
+                $this->clearFileIfExists($file);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private function clearLessFiles()
+    {
+        $this->output->writeln("Clearing Less Cache");
+
+        $app_path = $this->getSugar()->getAppPath();
+
+        $directory = sprintf("%s/cache/themes/clients/base/default", $app_path);
+
+        if ($this->filesystem->exists($directory)) {
+            $finder = new Finder();
+            $files = $finder->files()
+                ->name("*.css")
                 ->in($directory);
 
             foreach ($files as $file)
