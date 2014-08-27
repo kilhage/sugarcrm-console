@@ -2,6 +2,8 @@
 
 namespace DRI\SugarCRM\Language;
 
+use DRI\SugarCRM\Module\Vardefs\VardefManager;
+
 /**
  * @author Emil Kilhage
  */
@@ -60,6 +62,24 @@ class LanguageManager
     {
         $language = $language ?: $this->getCurrent();
         return return_module_language($language, $module, $refresh);
+    }
+
+    /**
+     * @param bool $language
+     * @param bool $refresh
+     *
+     * @return array
+     */
+    public function getAppListStrings($language = false, $refresh = false)
+    {
+        if ($refresh) {
+            $cache_key = 'app_list_strings.'.$language;
+            sugar_cache_clear($cache_key);
+        }
+
+        $app_list_strings = return_app_list_strings_language($language);
+
+        return $app_list_strings;
     }
 
     /**
@@ -131,6 +151,48 @@ class LanguageManager
         }
 
         return $missingLabels;
+    }
+
+    /**
+     * @param $module
+     * @param $language
+     * @param $baseLanguages
+     *
+     * @return array
+     */
+    public function getMissingEnumListsInModule($module, $language, $baseLanguages)
+    {
+        $vardefManager = new VardefManager($module);
+
+        $enumFields = $vardefManager->getFieldsByTypes(array ("enum", "multienum"));
+        $app = $this->getAppListStrings($language, true);
+
+        $missing = array ();
+
+        foreach ($enumFields as $field) {
+            if (!isset($field['options'])) {
+                continue;
+            }
+
+            if (!isset($app[$field['options']])) {
+                $missing[$field['options']] = array (
+                    '' => '',
+                );
+            }
+        }
+
+        foreach ($baseLanguages as $baseLanguage) {
+            $app = $this->getAppListStrings($baseLanguage, true);
+
+            foreach ($missing as $options => $list) {
+
+                if (isset($app[$options])) {
+                    $missing[$options] = array_merge($missing[$options], $app[$options]);
+                }
+            }
+        }
+
+        return $missing;
     }
 
     /**

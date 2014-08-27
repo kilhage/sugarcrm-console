@@ -90,6 +90,14 @@ class ValidateCommand extends ApplicationCommand
                 } else {
                     $output->writeln("<info>$module is ok in language $language:</info>");
                 }
+
+                $missingLabels = $this->languageManager->getMissingEnumListsInModule($module, $language, $baseLanguages);
+                if (!empty($missingLabels)) {
+                    $output->writeln("<error>Missing enum lists for module $module in language $language:</error>");
+                    foreach ($missingLabels as $label => $trans) {
+                        $output->writeln("\$app_list_strings['$label'] = ".var_export($trans, true).";");
+                    }
+                }
             }
         }
     }
