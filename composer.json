@@ -1,8 +1,8 @@
 {
-    "name": "kilhage/sugarcrm-console",
+    "name": "dri-nordic/sugarcrm-console",
     "license": "MIT",
     "description": "",
-    "homepage": "https://github.com/kilhage/sugarcrm-console",
+    "homepage": "http://gitlab.scm.dri.pt/dri-nordic/sugarcrm-console",
     "authors": [
         {
             "name": "Emil Kilhage",
