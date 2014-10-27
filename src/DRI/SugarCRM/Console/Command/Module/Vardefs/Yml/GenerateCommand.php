@@ -1,8 +1,8 @@
 <?php
 
-namespace DRI\SugarCRM\Console\Command\Generate\Yaml;
+namespace DRI\SugarCRM\Console\Command\Module\Vardefs\Yml;
 
-use \DRI\SugarCRM\Console\Command\ApplicationCommand;
+use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
