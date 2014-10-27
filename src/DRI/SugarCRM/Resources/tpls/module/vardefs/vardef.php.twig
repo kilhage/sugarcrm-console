@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Please note that this file has been generated based a file located on this path:
+ * {{ fileName }}
+ * and may be overwritten at a later point..
+ */
+
+{% for field in fields %}
+$dictionary['{{ dictionaryKey }}']['fields']['{{ field.name }}'] = {{ field.def | raw }};
+
+{% endfor %}
+{% for relationship in relationships %}
+$dictionary['{{ dictionaryKey }}']['relationships']['{{ relationship.name }}'] = {{ relationship.def | raw }};
+
+{% endfor %}
+{% for index in indices %}
+$dictionary['{{ dictionaryKey }}']['indices']['{{ index.name }}'] = {{ index.def | raw }};
+
+{% endfor %}

@@ -24,5 +24,11 @@
     },
     "bin": [
         "bin/sugarcrm"
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url":  "https://packages.dricrm.com/"
+        }
     ]
 }
