@@ -1,0 +1,46 @@
+################################################
+# Module: $module
+################################################
+---
+#defaults: # See VardefModifier/defaults.yml
+
+#add:
+#    fields:
+#        varchar:
+#        int:
+#        relate:
+#        link:
+#        enum:
+#        multienum:
+#        link:
+#        currency:
+#        text:
+#        date:
+#        decimal:
+#        image:
+#        datetimecombo:
+#        url:
+#        datetime:
+#        bool:
+#        float:
+#        phone:
+#        id:
+#        readonly:
+#        password:
+#        flex_relate:
+#        flex_relate_link:
+#        name:
+#        link:
+#        address:
+#    relationships:
+#    indices:
+
+#remove:
+#    fields:
+#    relationships:
+#    indices:
+
+#change:
+#    fields:
+#    relationships:
+#    indices:
