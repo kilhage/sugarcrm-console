@@ -146,7 +146,7 @@ class Application extends BaseApplication
 
         foreach ($iterator as $file) {
             $file_path = $file->getRealpath();
-            $class_name = ltrim($file_path, $prefix);
+            $class_name = str_replace($prefix, "", $file_path);
             $class_name = str_replace("/", "\\", rtrim($class_name, ".php"));
 
             $commands[] = $class_name;
