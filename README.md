@@ -23,8 +23,8 @@ Installation
 
 #### Checkout
 ```sh
-git clone https://github.com/kilhage/sugarcrm-console sugarcrm-console
-cd sugarcrm-console
+git clone git@gitlab.scm.dri.pt:dri-nordic/sugarcrm-console.git /usr/local/share/sugarcrm-console
+cd /usr/local/share/sugarcrm-console
 ```
 
 #### Install dependencies
@@ -36,14 +36,10 @@ php composer.phar install
 
 #### Install binary globally
 
-##### With rake
-```sh
-rake install:binary
-```
-
 ##### Manually
 ```sh
-ln -s bin/sugarcrm /usr/local/bin/sugarcrm
+chmod +x bin/sugarcrm
+ln -s /usr/local/share/sugarcrm-console/bin/sugarcrm /usr/local/bin/sugarcrm
 ```
 
 ### Install inside project
@@ -55,25 +51,18 @@ ln -s bin/sugarcrm /usr/local/bin/sugarcrm
     "repositories": [
         ....
         {
-            "url": "git@github.com:kilhage/sugarcrm-console.git",
-            "type": "git"
+            "type": "composer",
+            "url":  "https://packages.dricrm.com/"
         }
         .....
     ],
     ......
     "require": {
         .....
-        "kilhage/sugarcrm-console": "dev-master",
+        "dri-nordic/sugarcrm-console": "dev-master",
         .....
     }
     ....
-```
-
-#### As a submodule
-
-```sh
-git submodule add https://github.com/kilhage/sugarcrm-console sugarcrm-console
-cd sugarcrm-console
 ```
 
 ##### Install dependencies
