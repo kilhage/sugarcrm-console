@@ -33,7 +33,7 @@ class SetCommand extends ApplicationCommand
         $this->setName("perm:set")
             ->addOption('dry', null, InputOption::VALUE_NONE)
             ->addOption('only-owner', null, InputOption::VALUE_NONE)
-            ->addOption('file-mode', null, InputOption::VALUE_REQUIRED, "", 0755)
+            ->addOption('file-mode', null, InputOption::VALUE_REQUIRED, "", 755)
             ->setDescription("Corrects the local file permissions");
     }
 
