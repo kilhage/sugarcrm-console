@@ -32,6 +32,8 @@ class SetCommand extends ApplicationCommand
     {
         $this->setName("perm:set")
             ->addOption('dry', null, InputOption::VALUE_NONE)
+            ->addOption('only-owner', null, InputOption::VALUE_NONE)
+            ->addOption('file-mode', null, InputOption::VALUE_REQUIRED, "", 0755)
             ->setDescription("Corrects the local file permissions");
     }
 
@@ -51,16 +53,22 @@ class SetCommand extends ApplicationCommand
 
         $str = !empty($group) && !empty($user) ? "$user:$group" : (!empty($user) ? $user : null);
 
+        $path = is_dir(dirname(SUGAR_BASE_DIR) . "/docroot") ? dirname(SUGAR_BASE_DIR) : SUGAR_BASE_DIR;
+
         if (empty($str)) {
             $output->writeln("<error>Missing user & group in config.php at default_permissions.user & default_permissions.group</error>");
         } else {
             $output->writeln("<info>Changing owner of files to $str</info>");
 
-            $this->exec("chown -R $str .");
+            $this->exec("chown -R $str $path");
         }
 
-        $output->writeln("<info>Changing file permissions to 0755</info>");
-        $this->exec("chmod -R 0755 .");
+        if (!$input->getOption("only-owner")) {
+            $fileMode = $input->getOption("file-mode");
+
+            $output->writeln("<info>Changing file permissions to $fileMode</info>");
+            $this->exec("chmod -R $fileMode $path");
+        }
     }
 
     /**
