@@ -23,6 +23,14 @@ class InstallCommand extends Command
         "setup_site_admin_password",
     );
 
+    private static $aliasMap = array (
+        "setup_site_url" => "u",
+    );
+
+    private static $parameterMap = array (
+
+    );
+
     /**
      * @var array
      */
@@ -32,7 +40,7 @@ class InstallCommand extends Command
         'setup_db_sugarsales_password' => '',
         'setup_db_database_name' => null,
         'setup_db_type' => 'mysql',
-        'setup_db_pop_demo_data' => false,
+        'demoData' => 'no',
         'setup_db_create_database' => true,
         'setup_db_create_sugarsales_user' => 1,
         'dbUSRData' => 'create',
@@ -74,8 +82,14 @@ class InstallCommand extends Command
         foreach ($this->config as $key => $default) {
             $envDefault = $this->getKeyFromEnv($key);
 
-            $this->addOption($key, null, InputOption::VALUE_REQUIRED, "", $envDefault !== false ? $envDefault : $default);
+            $name = isset(self::$parameterMap[$key]) ? self::$parameterMap[$key] : $key;
+            $alias = isset(self::$aliasMap[$key]) ? self::$aliasMap[$key] : null;
+
+            $this->addOption($name, $alias, InputOption::VALUE_REQUIRED, "", $envDefault !== false ? $envDefault : $default);
         }
+
+        $this->addOption("auto_reinstall", "r", InputOption::VALUE_NONE, $this->getKeyFromEnv("auto_reinstall") ? : null);
+        $this->addOption("auto_drop_tables", "a", InputOption::VALUE_NONE, $this->getKeyFromEnv("auto_drop_tables") ? : null);
     }
 
     /**
@@ -87,6 +101,8 @@ class InstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkInstalled();
+
         $this->createConfigSi();
 
         try {
@@ -100,17 +116,105 @@ class InstallCommand extends Command
     }
 
     /**
+     *
+     */
+    private function checkDatabase()
+    {
+        $dbName = $this->getOption("setup_db_database_name");
+        $dbType = $this->getOption("setup_db_type");
+
+        if ($dbType !== "mysql") {
+            throw new \Exception("Unsupported db type: $dbType");
+        }
+
+        $db = new \mysqli(
+            $this->getOption("setup_db_host_name"),
+            $this->getOption("setup_db_admin_user_name"),
+            $this->getOption("setup_db_admin_password")
+        );
+
+        if ($db->select_db($dbName)) {
+            $auto_drop = $this->getOption("auto_drop_tables")
+                || $this->askForKey(
+                    "auto_drop_tables",
+                    "<question>Database exist: $dbName, drop it?</question> <comment>(y/n)</comment>: ",
+                    "n"
+                ) === "y";
+
+            if ($auto_drop) {
+                $this->output->writeln("<comment>Dropping table $dbName</comment>");
+                $db->query("DROP DATABASE $dbName");
+            } else {
+                throw new \Exception("Database exist: $dbName");
+            }
+        } else {
+            $this->output->writeln("<comment>DB does not exist</comment>");
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function configExists()
+    {
+        $filePath = $this->getConfigPath();
+        return file_exists($filePath);
+    }
+
+    /**
+     * @return bool
+     */
+    private function removeConfig()
+    {
+        $filePath = $this->getConfigPath();
+        $this->output->writeln("<comment>Removing $filePath</comment>");
+        unlink($filePath);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function checkConfig()
+    {
+        if ($this->configExists()) {
+            $autoReinstall = $this->getOption("auto_reinstall")
+                || $this->askForKey(
+                    "auto_reinstall",
+                    "<question>SugarCRM already seem to be installed, reinstall?</question> <comment>(y/n)</comment>: ",
+                    "n"
+                ) === "y";
+
+            if ($autoReinstall) {
+                $this->removeConfig();
+            } else {
+                throw new \Exception("SugarCRM already seem to be installed");
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private function checkInstalled()
+    {
+        $this->checkDatabase();
+        $this->checkConfig();
+    }
+
+    /**
      * @param $key
+     * @param $question
+     * @param $default
      *
      * @return mixed|string
      */
-    private function getOption($key)
+    private function getOption($key, $question = "<question>Please enter a value of config key %s:</question> ", $default = null)
     {
         $value = $this->input->getOption($key);
 
         if (is_null($value) && in_array($key, static::$required)) {
             $value = $this->getKeyFromEnv($key);
-            $value = $value !== false ? $value : $this->askForKey($key);
+            $value = $value !== false ? $value : $this->askForKey($key, $question, $default);
         }
 
         $value = $this->fix($key, $value);
@@ -151,15 +255,17 @@ PHP;
 
     /**
      * @param $key
+     * @param $question
+     * @param $default
      *
      * @return string
      */
-    private function askForKey($key)
+    private function askForKey($key, $question, $default = "")
     {
         return $this->dialog->ask(
             $this->output,
-            "<question>Please enter a value of config key $key:</question> ",
-            ''
+            sprintf($question, $key),
+            $default
         );
     }
 
@@ -186,11 +292,9 @@ PHP;
         switch ($key) {
             case "setup_site_url":
                 if (strpos($value, "http") !== 0) {
-                    $this->output->writeln("<comment>Prepending url with http://</comment>");
-                    return "http://$value";
+                    $value = "http://$value";
+                    $this->output->writeln("<comment>Prepending url with http:// - result: $value</comment>");
                 }
-
-                break;
         }
 
         return $value;
@@ -207,11 +311,22 @@ PHP;
     }
 
     /**
+     * @return string
+     */
+    public function getConfigPath()
+    {
+        $appPath = $this->getAppPath();
+        $filePath = "$appPath/config.php";
+        return $filePath;
+    }
+
+    /**
      *
      */
     private function removeConfigSi()
     {
         $filePath = $this->getConfigSiPath();
+        $this->output->writeln("<comment>Removing $filePath</comment>");
         unlink($filePath);
     }
 
