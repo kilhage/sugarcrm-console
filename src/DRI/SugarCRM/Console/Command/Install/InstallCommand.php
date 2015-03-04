@@ -246,12 +246,14 @@ PHP;
 
         // message in a bottle
         preg_match('/<bottle>(.*)<\/bottle>/s', $si_results, $message);
+
         if (count($message) == 2) {
             // success
             $this->output->writeln("<info>{$message[1]}</info>");
         } else {
             // failure
             preg_match('/Exit (.*)/', $si_results, $message);
+
             if (count($message) == 2) {
                 $this->output->writeln("<error>Error.  Most likely your configuration file is invalid.  Message returned was</error>");
             } else {
@@ -261,8 +263,7 @@ PHP;
                     $this->output->writeln("<error>Unknown error.  I don't know about this type of error message:</error>");
                 }
             }
-            print($si_results . "\n");
-            exit(1);
+            $this->output->writeln($si_results);
         }
     }
 
