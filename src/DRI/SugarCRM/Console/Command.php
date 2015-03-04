@@ -3,6 +3,7 @@
 namespace DRI\SugarCRM\Console;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,6 +24,11 @@ abstract class Command extends BaseCommand
     protected $output;
 
     /**
+     * @var DialogHelper
+     */
+    protected $dialog;
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      */
@@ -32,6 +38,7 @@ abstract class Command extends BaseCommand
 
         $this->input = $input;
         $this->output = $output;
+        $this->dialog = $this->getHelper('dialog');
     }
 
 }

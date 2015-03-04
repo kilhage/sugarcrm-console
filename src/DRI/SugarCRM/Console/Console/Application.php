@@ -155,4 +155,12 @@ class Application extends BaseApplication
         return $commands;
     }
 
+    /**
+     * @return Sugar
+     */
+    public function getSugar()
+    {
+        return $this->sugar;
+    }
+
 }
