@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "Emil Kilhage",
-            "email": "emilkilhage@gmail.com"
+            "email": "emil.kilhage@dri-nordic.com"
         }
     ],
     "require": {
@@ -24,11 +24,5 @@
     },
     "bin": [
         "bin/sugarcrm"
-    ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url":  "https://packages.dricrm.com/"
-        }
     ]
 }
