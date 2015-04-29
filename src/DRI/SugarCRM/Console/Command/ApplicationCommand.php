@@ -12,14 +12,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class ApplicationCommand extends Command implements SugarAwareCommand
 {
-
     /**
      * @var Sugar
      */
     protected $sugar;
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -28,7 +27,7 @@ abstract class ApplicationCommand extends Command implements SugarAwareCommand
 
         $sugar = $this->getSugar();
 
-        $current_user_id = $input->getOption("current_user");
+        $current_user_id = $input->getOption('current_user');
         if (!empty($current_user_id)) {
             $sugar->loadCurrentUser($current_user_id);
         } else {
@@ -55,5 +54,4 @@ abstract class ApplicationCommand extends Command implements SugarAwareCommand
     {
         return $this->sugar;
     }
-
 }

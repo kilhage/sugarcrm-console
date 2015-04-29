@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class HelpCommand extends ApplicationCommand
 {
-
     /**
      * @var LanguageManager
      */
@@ -31,29 +30,29 @@ class HelpCommand extends ApplicationCommand
      */
     protected function configure()
     {
-        $this->setName("module:dashboards:help")
-            ->addArgument("module", InputArgument::REQUIRED, "Target module")
-            ->addOption("language", 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_OPTIONAL, "A list of all languages to translate the labels into", array ('default'))
-            ->addOption("translation", 't', InputOption::VALUE_OPTIONAL, "The translation for labels: LBL_HELP_CREATE, LBL_HELP_RECORD, LBL_HELP_RECORDS")
-            ->addOption("create-translation", null, InputOption::VALUE_OPTIONAL, "The translation for label: LBL_HELP_CREATE")
-            ->addOption("record-translation", null, InputOption::VALUE_OPTIONAL, "The translation for label: LBL_HELP_RECORD")
-            ->addOption("list-translation", null, InputOption::VALUE_OPTIONAL, "The translation for label: LBL_HELP_RECORDS")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Run the command without making any actual changes")
-            ->setDescription("Sets up the dashboard definitions and labels inside a module");
+        $this->setName('module:dashboards:help')
+            ->addArgument('module', InputArgument::REQUIRED, 'Target module')
+            ->addOption('language', 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_OPTIONAL, 'A list of all languages to translate the labels into', array('default'))
+            ->addOption('translation', 't', InputOption::VALUE_OPTIONAL, 'The translation for labels: LBL_HELP_CREATE, LBL_HELP_RECORD, LBL_HELP_RECORDS')
+            ->addOption('create-translation', null, InputOption::VALUE_OPTIONAL, 'The translation for label: LBL_HELP_CREATE')
+            ->addOption('record-translation', null, InputOption::VALUE_OPTIONAL, 'The translation for label: LBL_HELP_RECORD')
+            ->addOption('list-translation', null, InputOption::VALUE_OPTIONAL, 'The translation for label: LBL_HELP_RECORDS')
+            ->addOption('dry', null, InputOption::VALUE_NONE, 'Run the command without making any actual changes')
+            ->setDescription('Sets up the dashboard definitions and labels inside a module');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $module = $input->getArgument("module");
+        $module = $input->getArgument('module');
 
-        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption("language"));
-        $translation = $input->getOption("translation");
+        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption('language'));
+        $translation = $input->getOption('translation');
 
         $this->ensureSideBarLayoutCreated($module);
         $this->ensureLocalTranslations($module, $languages);
@@ -94,21 +93,21 @@ PHP;
      */
     private function ensureLocalTranslations($module, array $languages)
     {
-        $install = array ();
+        $install = array();
 
-        $translation = $this->input->getOption("translation");
+        $translation = $this->input->getOption('translation');
 
         if (!empty($translation)) {
-            $labels = array (
-                "LBL_HELP_CREATE" => $translation,
-                "LBL_HELP_RECORD" => $translation,
-                "LBL_HELP_RECORDS" => $translation,
+            $labels = array(
+                'LBL_HELP_CREATE' => $translation,
+                'LBL_HELP_RECORD' => $translation,
+                'LBL_HELP_RECORDS' => $translation,
             );
         } else {
-            $labels = array (
-                "LBL_HELP_CREATE" => $this->input->getOption("create-translation"),
-                "LBL_HELP_RECORD" => $this->input->getOption("record-translation"),
-                "LBL_HELP_RECORDS" => $this->input->getOption("list-translation"),
+            $labels = array(
+                'LBL_HELP_CREATE' => $this->input->getOption('create-translation'),
+                'LBL_HELP_RECORD' => $this->input->getOption('record-translation'),
+                'LBL_HELP_RECORDS' => $this->input->getOption('list-translation'),
             );
         }
 
@@ -127,7 +126,7 @@ PHP;
         }
 
         if (empty($install)) {
-            $this->output->writeln("<info>No translation to install</info>");
+            $this->output->writeln('<info>No translation to install</info>');
         } else {
             foreach ($install as $language => $labels) {
                 $this->installTranslations($module, $language, $labels);
@@ -179,7 +178,7 @@ PHP;
         if (!is_dir($dir)) {
             $this->output->writeln("<comment>Creating directory: $dir</comment>");
 
-            if (!$this->input->getOption("dry")) {
+            if (!$this->input->getOption('dry')) {
                 mkdir($dir, 0755, true);
             }
         }
@@ -191,13 +190,12 @@ PHP;
      */
     private function write($path, $content)
     {
-        $action = file_exists($path) ? "Updating" : "Creating";
+        $action = file_exists($path) ? 'Updating' : 'Creating';
 
         $this->output->writeln("<comment>$action file: $path</comment>");
 
-        if (!$this->input->getOption("dry")) {
+        if (!$this->input->getOption('dry')) {
             file_put_contents($path, $content);
         }
     }
-
 }

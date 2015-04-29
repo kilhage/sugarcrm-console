@@ -7,7 +7,6 @@ namespace DRI\SugarCRM\Console;
  */
 class Application
 {
-
     /**
      * @var \User
      */
@@ -65,8 +64,7 @@ class Application
     {
         global $db;
 
-        if (empty($db))
-        {
+        if (empty($db)) {
             $db = \DBManagerFactory::getInstance();
         }
 
@@ -86,7 +84,7 @@ class Application
      */
     public function start()
     {
-        require_once('include/MVC/SugarApplication.php');
+        require_once 'include/MVC/SugarApplication.php';
 
         global $current_module, $currentModule;
         $currentModule = $current_module = 'Administration';
@@ -95,10 +93,9 @@ class Application
 
         $this->app = new \SugarApplication();
         $this->app->startSession();
-        $this->app->controller = \ControllerFactory::getController($current_module);;
+        $this->app->controller = \ControllerFactory::getController($current_module);
         $this->app->loadLanguages();
         $this->app->loadGlobals();
         $this->app->loadLicense();
     }
-
 }

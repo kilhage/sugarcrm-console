@@ -9,7 +9,6 @@ use DRI\SugarCRM\Console\Application as Sugar;
  */
 interface SugarAwareCommand
 {
-
     /**
      * @param Sugar
      */
@@ -19,5 +18,4 @@ interface SugarAwareCommand
      * @param Sugar $sugar
      */
     public function setSugar(Sugar $sugar);
-
 }

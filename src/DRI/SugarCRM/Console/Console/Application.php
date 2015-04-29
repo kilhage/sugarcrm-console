@@ -7,7 +7,6 @@ use DRI\SugarCRM\Console\Command\SugarAwareCommand;
 use DRI\SugarCRM\Console\Application as Sugar;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +17,6 @@ use Symfony\Component\Finder\Finder;
  */
 class Application extends BaseApplication
 {
-
     /**
      * @var Sugar
      */
@@ -27,7 +25,7 @@ class Application extends BaseApplication
     /**
      * @var array
      */
-    private $commands = array ();
+    private $commands = array();
 
     /**
      * @param Sugar $sugar
@@ -45,8 +43,9 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int
      */
     public function doRun(InputInterface $input, OutputInterface $output)
@@ -60,14 +59,15 @@ class Application extends BaseApplication
     private function registerCommands()
     {
         $this->_addCommands(
-            dirname(dirname(dirname(dirname(__DIR__)))) . "/",
-            dirname(__DIR__) . "/Command/"
+            dirname(dirname(dirname(dirname(__DIR__)))).'/',
+            dirname(__DIR__).'/Command/'
         );
     }
 
     /**
      * @param array|\Symfony\Component\Console\Command\Command[] $prefix
      * @param $dir
+     *
      * @throws \LogicException
      */
     private function _addCommands($prefix, $dir)
@@ -107,6 +107,7 @@ class Application extends BaseApplication
      * @param string $name
      *
      * @return \DRI\SugarCRM\Console\Command
+     *
      * @throws \LogicException
      */
     private function getCommand($name)
@@ -126,6 +127,7 @@ class Application extends BaseApplication
     public function isApplicationCommand($command_name)
     {
         $command = $this->getCommand($command_name);
+
         return $command instanceof ApplicationCommand;
     }
 
@@ -137,7 +139,7 @@ class Application extends BaseApplication
      */
     private function getFiles($prefix, $path)
     {
-        $commands = array ();
+        $commands = array();
         $finder = new Finder();
         $iterator = $finder
             ->files()
@@ -146,8 +148,8 @@ class Application extends BaseApplication
 
         foreach ($iterator as $file) {
             $file_path = $file->getRealpath();
-            $class_name = str_replace($prefix, "", $file_path);
-            $class_name = str_replace("/", "\\", rtrim($class_name, ".php"));
+            $class_name = str_replace($prefix, '', $file_path);
+            $class_name = str_replace('/', '\\', rtrim($class_name, '.php'));
 
             $commands[] = $class_name;
         }
@@ -162,5 +164,4 @@ class Application extends BaseApplication
     {
         return $this->sugar;
     }
-
 }

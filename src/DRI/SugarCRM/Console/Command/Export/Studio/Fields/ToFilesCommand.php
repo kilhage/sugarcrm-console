@@ -12,39 +12,38 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ToFilesCommand extends ApplicationCommand
 {
-
     protected function configure()
     {
-        $this->setName("export:studio:fields:to-files")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Only output the sql's that will be executed")
-            ->addOption("remove-field-from-db", null, InputOption::VALUE_NONE, "Removes the field from the fields_meta_data if successful")
-            ->addOption("output-content", null, InputOption::VALUE_NONE, "Outputs the content that will be written")
-            ->setDescription("Exports Studio Fields To Files");
+        $this->setName('export:studio:fields:to-files')
+            ->addOption('dry', null, InputOption::VALUE_NONE, "Only output the sql's that will be executed")
+            ->addOption('remove-field-from-db', null, InputOption::VALUE_NONE, 'Removes the field from the fields_meta_data if successful')
+            ->addOption('output-content', null, InputOption::VALUE_NONE, 'Outputs the content that will be written')
+            ->setDescription('Exports Studio Fields To Files');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
+     *
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Exporting Studio Fields");
+        $output->writeln('Exporting Studio Fields');
 
-        $dry = $input->getOption("dry");
-        $remove_field_from_db = $input->getOption("remove-field-from-db");
-        $output_content = $input->getOption("output-content");
+        $dry = $input->getOption('dry');
+        $remove_field_from_db = $input->getOption('remove-field-from-db');
+        $output_content = $input->getOption('output-content');
 
         $app_path = $this->getSugar()->getAppPath();
 
         $db = \DBManagerFactory::getInstance();
-        $sql = "SELECT * FROM fields_meta_data";
+        $sql = 'SELECT * FROM fields_meta_data';
         $result = $db->query($sql);
 
-        while ($row = $db->fetchByAssoc($result))
-        {
+        while ($row = $db->fetchByAssoc($result)) {
             $module = $row['custom_module'];
             $field_name = $row['name'];
             $id = $row['id'];
@@ -82,12 +81,12 @@ PHP;
 
                 if (!$dry) {
                     if (file_put_contents($path, $content) === false) {
-                        throw new \Exception("Unable to write to file: ");
+                        throw new \Exception('Unable to write to file: ');
                     }
                 }
 
                 if ($remove_field_from_db) {
-                    $output->writeln("Removing field from fields_meta_data");
+                    $output->writeln('Removing field from fields_meta_data');
                     if (!$dry) {
                         $db->query("DELETE FROM fields_meta_data WHERE id = '{$id}'");
                     }
@@ -95,7 +94,6 @@ PHP;
             }
         }
 
-        $output->writeln("Done");
+        $output->writeln('Done');
     }
-
 }

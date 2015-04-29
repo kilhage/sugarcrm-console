@@ -9,7 +9,6 @@ use DRI\SugarCRM\Module\Vardefs\VardefManager;
  */
 class LanguageManager
 {
-
     /**
      * @return mixed
      */
@@ -61,6 +60,7 @@ class LanguageManager
     public function getModuleLanguage($module, $language = false, $refresh = false)
     {
         $language = $language ?: $this->getCurrent();
+
         return return_module_language($language, $module, $refresh);
     }
 
@@ -92,7 +92,7 @@ class LanguageManager
         $vName = $def['vname'];
 
         if ($def['type'] == 'currency') {
-            $vName = str_replace("USDOLLAR", "USD", $vName);
+            $vName = str_replace('USDOLLAR', 'USD', $vName);
         }
 
         return $this->translateLabel($vName);
@@ -102,9 +102,9 @@ class LanguageManager
     {
         $label = preg_replace('/^LBL_/', '', $label);
         $label = strtolower($label);
-        $parts = explode("_", $label);
+        $parts = explode('_', $label);
         $parts = array_map('ucfirst', $parts);
-        $translation = implode(" ", $parts);
+        $translation = implode(' ', $parts);
 
         return $translation;
     }
@@ -112,8 +112,8 @@ class LanguageManager
     /**
      * @param $module
      * @param string $language
-     * @param bool $local
-     * @param array $baseLanguages
+     * @param bool   $local
+     * @param array  $baseLanguages
      *
      * @return array
      */
@@ -122,7 +122,7 @@ class LanguageManager
         $labels = $this->getModuleLanguage($module, $language, true);
         $bean = \BeanFactory::getBean($module);
 
-        $missingLabels = array ();
+        $missingLabels = array();
 
         foreach ($bean->getFieldDefinitions() as $name => $def) {
             if (!empty($def['vname'])) {
@@ -164,10 +164,10 @@ class LanguageManager
     {
         $vardefManager = new VardefManager($module);
 
-        $enumFields = $vardefManager->getFieldsByTypes(array ("enum", "multienum"));
+        $enumFields = $vardefManager->getFieldsByTypes(array('enum', 'multienum'));
         $app = $this->getAppListStrings($language, true);
 
-        $missing = array ();
+        $missing = array();
 
         foreach ($enumFields as $field) {
             if (!isset($field['options'])) {
@@ -175,7 +175,7 @@ class LanguageManager
             }
 
             if (!isset($app[$field['options']])) {
-                $missing[$field['options']] = array (
+                $missing[$field['options']] = array(
                     '' => '',
                 );
             }
@@ -185,7 +185,6 @@ class LanguageManager
             $app = $this->getAppListStrings($baseLanguage, true);
 
             foreach ($missing as $options => $list) {
-
                 if (isset($app[$options])) {
                     $missing[$options] = array_merge($missing[$options], $app[$options]);
                 }
@@ -197,6 +196,7 @@ class LanguageManager
 
     /**
      * @param array $options
+     *
      * @return array
      */
     public function getLanguagesBasedOnOptions(array $options)
@@ -204,13 +204,16 @@ class LanguageManager
         foreach ($options as $option) {
             switch ($option) {
                 case 'current';
-                    return array ($this->getCurrent());
+
+                    return array($this->getCurrent());
                     break;
                 case 'active';
+
                     return $this->getActive();
                     break;
                 case 'default';
-                    return array ($this->getDefault());
+
+                    return array($this->getDefault());
                     break;
             }
         }
@@ -230,5 +233,4 @@ class LanguageManager
 
         return $translation;
     }
-
 }

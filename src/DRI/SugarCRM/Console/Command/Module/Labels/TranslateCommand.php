@@ -5,7 +5,6 @@ namespace DRI\SugarCRM\Console\Command\Module\Labels;
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use DRI\SugarCRM\Language\LanguageManager;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TranslateCommand extends ApplicationCommand
 {
-
     /**
      * @var LanguageManager
      */
@@ -29,22 +27,22 @@ class TranslateCommand extends ApplicationCommand
 
     protected function configure()
     {
-        $this->setName("module:labels:translate")
-            ->addArgument("module", InputArgument::REQUIRED, "module to list labels in")
-            ->addArgument("label", InputArgument::REQUIRED, "module to list labels in")
-            ->addOption("language", 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, "", array ('default'))
-            ->setDescription("Validates all labels in a module");
+        $this->setName('module:labels:translate')
+            ->addArgument('module', InputArgument::REQUIRED, 'module to list labels in')
+            ->addArgument('label', InputArgument::REQUIRED, 'module to list labels in')
+            ->addOption('language', 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, '', array('default'))
+            ->setDescription('Validates all labels in a module');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption("language"));
+        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption('language'));
         $module = $input->getArgument('module');
         $label = $input->getArgument('label');
 
@@ -55,5 +53,4 @@ class TranslateCommand extends ApplicationCommand
             $output->writeln($this->languageManager->translate($module, $label));
         }
     }
-
 }

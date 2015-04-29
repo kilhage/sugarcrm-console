@@ -5,7 +5,6 @@ namespace DRI\SugarCRM\Console\Command\Module\Labels;
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use DRI\SugarCRM\Language\LanguageManager;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ValidateCommand extends ApplicationCommand
 {
-
     /**
      * @var LanguageManager
      */
@@ -29,18 +27,18 @@ class ValidateCommand extends ApplicationCommand
 
     protected function configure()
     {
-        $this->setName("module:labels:validate")
-            ->addArgument("module", InputArgument::REQUIRED, "module to validate labels in")
-            ->addOption("language", 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, "", array ('default'))
-            ->addOption("local", 'lo', InputOption::VALUE_REQUIRED, "", "false")
-            ->addOption("format", 'fo', InputOption::VALUE_REQUIRED, "", "array")
-            ->addOption("variableName", 'vn', InputOption::VALUE_OPTIONAL, "", "mod_strings")
-            ->addOption("base", null, InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, "", array ("default"))
-            ->setDescription("Validates all labels in a module");
+        $this->setName('module:labels:validate')
+            ->addArgument('module', InputArgument::REQUIRED, 'module to validate labels in')
+            ->addOption('language', 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, '', array('default'))
+            ->addOption('local', 'lo', InputOption::VALUE_REQUIRED, '', 'false')
+            ->addOption('format', 'fo', InputOption::VALUE_REQUIRED, '', 'array')
+            ->addOption('variableName', 'vn', InputOption::VALUE_OPTIONAL, '', 'mod_strings')
+            ->addOption('base', null, InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, '', array('default'))
+            ->setDescription('Validates all labels in a module');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -48,14 +46,14 @@ class ValidateCommand extends ApplicationCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         global $beanList;
-        $preg = $input->getArgument("module");
-        $languages = $input->getOption("language");
-        $variableName = $input->getOption("variableName");
-        $format = $input->getOption("format");
-        $baseLanguages = $input->getOption("base");
-        $local = $input->getOption("local") === "true";
+        $preg = $input->getArgument('module');
+        $languages = $input->getOption('language');
+        $variableName = $input->getOption('variableName');
+        $format = $input->getOption('format');
+        $baseLanguages = $input->getOption('base');
+        $local = $input->getOption('local') === 'true';
 
-        if (strpos($preg, "/") !== 0) {
+        if (strpos($preg, '/') !== 0) {
             $preg = "/^$preg$/";
         }
 
@@ -66,10 +64,10 @@ class ValidateCommand extends ApplicationCommand
         foreach ($languages as $language) {
             $this->languageManager->setCurrent($language);
             $this->languageManager->setDefault($language);
-            foreach ($modules as $module)
-            {
-                if (!preg_match($preg, $module))
+            foreach ($modules as $module) {
+                if (!preg_match($preg, $module)) {
                     continue;
+                }
 
                 $missingLabels = $this->languageManager->getMissingLabelsInModule($module, $language, $local, $baseLanguages);
 
@@ -77,11 +75,11 @@ class ValidateCommand extends ApplicationCommand
                     $output->writeln("<error>Missing labels for module $module in language $language:</error>");
 
                     switch ($format) {
-                        case "array":
+                        case 'array':
                             $output->write(var_export($missingLabels, true));
                             break;
-                        case "variables":
-                        case "vars":
+                        case 'variables':
+                        case 'vars':
                             foreach ($missingLabels as $label => $trans) {
                                 $output->writeln("\${$variableName}['$label'] = '$trans';");
                             }
@@ -95,11 +93,10 @@ class ValidateCommand extends ApplicationCommand
                 if (!empty($missingLabels)) {
                     $output->writeln("<error>Missing enum lists for module $module in language $language:</error>");
                     foreach ($missingLabels as $label => $trans) {
-                        $output->writeln("\$app_list_strings['$label'] = ".var_export($trans, true).";");
+                        $output->writeln("\$app_list_strings['$label'] = ".var_export($trans, true).';');
                     }
                 }
             }
         }
     }
-
 }

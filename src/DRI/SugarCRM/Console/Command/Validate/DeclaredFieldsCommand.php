@@ -12,32 +12,31 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeclaredFieldsCommand extends ApplicationCommand
 {
-
     protected function configure()
     {
-        $this->setName("validate:declared-fields")
-            ->addArgument("preg", InputArgument::OPTIONAL, "Regular expression to field the modules checked")
-            ->setDescription("Validates that all fields are declared in a modules bean");
+        $this->setName('validate:declared-fields')
+            ->addArgument('preg', InputArgument::OPTIONAL, 'Regular expression to field the modules checked')
+            ->setDescription('Validates that all fields are declared in a modules bean');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         global $beanList, $beanFiles;
-        $preg = $input->getArgument("preg");
+        $preg = $input->getArgument('preg');
 
         if (empty($preg)) {
             $preg = '/.*/';
         }
 
-        if (strpos($preg, "/") !== 0) {
+        if (strpos($preg, '/') !== 0) {
             $preg = "/$preg/";
         }
 
         $modules = array_keys($beanList);
-        foreach ($modules as $module)
-        {
-            if (!preg_match($preg, $module))
+        foreach ($modules as $module) {
+            if (!preg_match($preg, $module)) {
                 continue;
+            }
 
             $bean = \BeanFactory::getBean($module);
 
@@ -48,25 +47,19 @@ class DeclaredFieldsCommand extends ApplicationCommand
             $object_name = $bean->getObjectName();
 
             $refl = new \ReflectionClass(get_class($bean));
-            $missing = array ();
+            $missing = array();
 
-            foreach ($bean->getFieldDefinitions() as $name => $def)
-            {
-                if (!$refl->hasProperty($name))
-                {
+            foreach ($bean->getFieldDefinitions() as $name => $def) {
+                if (!$refl->hasProperty($name)) {
                     $missing[] = "    public \$$name;";
                 }
             }
 
-            if (!empty($missing))
-            {
-                echo "\n* the $object_name bean are missing: \n" . implode("\n", $missing) . "\n";
-            }
-            else
-            {
+            if (!empty($missing)) {
+                echo "\n* the $object_name bean are missing: \n".implode("\n", $missing)."\n";
+            } else {
                 echo "\n* the $object_name are fine!\n";
             }
         }
     }
-
 }

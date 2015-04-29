@@ -15,7 +15,6 @@ use Symfony\Component\Finder\Finder;
  */
 class ClearCommand extends Command implements Command\SugarAwareCommand
 {
-
     /**
      * @var Filesystem
      */
@@ -27,7 +26,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
     protected $sugar;
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -58,13 +57,13 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     protected function configure()
     {
-        $this->setName("cache:clear")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Only output the things that will be cleared")
-            ->setDescription("Clears the cache");
+        $this->setName('cache:clear')
+            ->addOption('dry', null, InputOption::VALUE_NONE, 'Only output the things that will be cleared')
+            ->setDescription('Clears the cache');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -82,20 +81,19 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearComponentsFiles()
     {
-        $this->output->writeln("Clearing Components Cache");
+        $this->output->writeln('Clearing Components Cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
-        $directory = sprintf("%s/cache/javascript/base", $app_path);
+        $directory = sprintf('%s/cache/javascript/base', $app_path);
 
         if ($this->filesystem->exists($directory)) {
             $finder = new Finder();
             $files = $finder->files()
-                ->name("components_*.js")
+                ->name('components_*.js')
                 ->in($directory);
 
-            foreach ($files as $file)
-            {
+            foreach ($files as $file) {
                 $this->clearFileIfExists($file);
             }
         }
@@ -106,20 +104,19 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearJsGroupingFiles()
     {
-        $this->output->writeln("Clearing Js Grouping Cache");
+        $this->output->writeln('Clearing Js Grouping Cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
-        $directory = sprintf("%s/cache/include/javascript", $app_path);
+        $directory = sprintf('%s/cache/include/javascript', $app_path);
 
         if ($this->filesystem->exists($directory)) {
             $finder = new Finder();
             $files = $finder->files()
-                ->name("sugar_*.js")
+                ->name('sugar_*.js')
                 ->in($directory);
 
-            foreach ($files as $file)
-            {
+            foreach ($files as $file) {
                 $this->clearFileIfExists($file);
             }
         }
@@ -130,20 +127,19 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearLessFiles()
     {
-        $this->output->writeln("Clearing Less Cache");
+        $this->output->writeln('Clearing Less Cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
-        $directory = sprintf("%s/cache/themes/clients/base/default", $app_path);
+        $directory = sprintf('%s/cache/themes/clients/base/default', $app_path);
 
         if ($this->filesystem->exists($directory)) {
             $finder = new Finder();
             $files = $finder->files()
-                ->name("*.css")
+                ->name('*.css')
                 ->in($directory);
 
-            foreach ($files as $file)
-            {
+            foreach ($files as $file) {
                 $this->clearFileIfExists($file);
             }
         }
@@ -154,12 +150,12 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearAutoloaderCache()
     {
-        $this->output->writeln("Clearing Autoloader Cache");
+        $this->output->writeln('Clearing Autoloader Cache');
 
         $app_path = $this->getSugar()->getAppPath();
-        $files = array (
-            sprintf("%s/cache/file_map.php", $app_path),
-            sprintf("%s/cache/class_map.php", $app_path),
+        $files = array(
+            sprintf('%s/cache/file_map.php', $app_path),
+            sprintf('%s/cache/class_map.php', $app_path),
         );
 
         $this->clearFilesIfExists($files);
@@ -170,8 +166,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearFilesIfExists(array $files)
     {
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $this->clearFileIfExists($file);
         }
     }
@@ -186,10 +181,9 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
                 $this->output->writeln(" - Removing file: $file");
             }
 
-            if (!$this->input->getOption("dry")) {
+            if (!$this->input->getOption('dry')) {
                 $this->filesystem->remove($file);
             }
         }
     }
-
 }

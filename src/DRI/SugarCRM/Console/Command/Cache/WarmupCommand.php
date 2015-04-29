@@ -13,14 +13,13 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class WarmupCommand extends Command
 {
-
     /**
      * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -35,22 +34,22 @@ class WarmupCommand extends Command
      */
     protected function configure()
     {
-        $this->setName("cache:warmup")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Only output the things that will be created")
-            ->setDescription("Warms up the cache");
+        $this->setName('cache:warmup')
+            ->addOption('dry', null, InputOption::VALUE_NONE, 'Only output the things that will be created')
+            ->setDescription('Warms up the cache');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Warming up cache");
+        $output->writeln('Warming up cache');
 
-        $directories = array (
+        $directories = array(
             'cache',
             'cache/csv',
             'cache/feeds',
@@ -73,7 +72,6 @@ class WarmupCommand extends Command
             }
         }
 
-        $output->writeln("Done");
+        $output->writeln('Done');
     }
-
 }

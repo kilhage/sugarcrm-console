@@ -9,11 +9,9 @@ use DRI\SugarCRM\Console\Command\ApplicationCommand;
  */
 class LabelsCommand extends ApplicationCommand
 {
-
     protected function configure()
     {
-        $this->setName("validate:labels")
-            ->setDescription("Validates translated labels (Not implemented)");
+        $this->setName('validate:labels')
+            ->setDescription('Validates translated labels (Not implemented)');
     }
-
 }

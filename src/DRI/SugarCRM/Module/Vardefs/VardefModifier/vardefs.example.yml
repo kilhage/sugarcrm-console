@@ -1,7 +1,7 @@
 ################################################
 # Vardef example
 #
-# For more examples and a more detailed 
+# For more examples and a more detailed
 # reference on what gets generated, see
 # ./VardefModifier/Test.php
 #
@@ -49,7 +49,7 @@ add:
             # see https://github.com/tekimaki/spyc for complete yaml syntax reference.
             my_int_field: { len: 2 }
         #################################################
-        
+
         #################################################
         # Adds text fields
         text:
@@ -126,14 +126,14 @@ add:
             #################################################
 
             #################################################
-            # Adds a link field for a named relationship 
+            # Adds a link field for a named relationship
             # in the Cases module vardef.yml
             #
             # If this where added:
             #   add:
             #       relationships:
             #           owner: <module name>
-            # 
+            #
             # The following will link up the relationship
             # on this side.
             #
@@ -235,7 +235,7 @@ add:
 
         #################################################
         # The activity relation is a rather special case.
-        # 
+        #
         # What this does is to add relationship definitions
         # to the Tasks, Notes, Meetings, Calls and Emails
         # modules in order to be able to add the activity
@@ -247,7 +247,7 @@ add:
         #   - meetings: link to the Meetings module
         #   - calls: link to the Calls module
         #   - emails: link to the Emails module
-        # 
+        #
         - Activities
         #################################################
 

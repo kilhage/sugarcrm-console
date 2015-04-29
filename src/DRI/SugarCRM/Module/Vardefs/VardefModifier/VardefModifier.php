@@ -2,16 +2,14 @@
 
 namespace DRI\SugarCRM\Console\Command\Module\Vardefs\VardefModifier;
 
-if (!class_exists('Spyc'))
-{
-    require_once dirname(__FILE__) . '/spyc.php';
+if (!class_exists('Spyc')) {
+    require_once dirname(__FILE__).'/spyc.php';
 }
 
-require_once dirname(__FILE__) . '/VardefModifier/Exception.php';
+require_once dirname(__FILE__).'/VardefModifier/Exception.php';
 
 class VardefModifier_RecursiveException extends \Exception
 {
-
     public $table_name;
 
     public function __construct($table_name)
@@ -19,77 +17,71 @@ class VardefModifier_RecursiveException extends \Exception
         $this->table_name = $table_name;
         parent::__construct();
     }
-
 }
 
 /**
- * Simplifes modifications of SugarCrm vardef definitions
+ * Simplifes modifications of SugarCrm vardef definitions.
  *
  * @author Emil Kilhage
  */
 class VardefModifier
 {
-
     /**
      * Holds the default field definitions that all fields are built from
-     * This is loaded from the ./defaults.yml file by VardefModifier::loadDefaults
+     * This is loaded from the ./defaults.yml file by VardefModifier::loadDefaults.
+     *
      * @var array
      */
     private static $_defaults;
 
     /**
-     * Modules that doesn't have the object name as dictionary key are listed here
+     * Modules that doesn't have the object name as dictionary key are listed here.
      *
      * @var array
      */
-    private static $special_dictionary_key_mappings = array (
+    private static $special_dictionary_key_mappings = array(
         'Cases' => 'Case',
     );
 
     /**
      * @param string $module_name
-     * @param array $dictionary
+     * @param array  $dictionary
+     *
      * @return VardefModifier
      */
     public static function modify($module_name, array $dictionary)
     {
-        return new VardefModifier($module_name, $dictionary);
+        return new self($module_name, $dictionary);
     }
 
     /**
      * @return array
+     *
      * @throws VardefModifier_Exception
      */
     private static function loadDefaults()
     {
-        if (!isset(self::$_defaults))
-        {
-            $file = dirname(__FILE__) . '/defaults.yml';
+        if (!isset(self::$_defaults)) {
+            $file = dirname(__FILE__).'/defaults.yml';
             self::$_defaults = spyc_load_file($file);
         }
     }
 
     /**
-     * Recursive helper method used by VardefModifier::remove
+     * Recursive helper method used by VardefModifier::remove.
      *
      * @param array $values
      * @param array $from
      */
-    private static function _remove(array $values, array & $from)
+    private static function _remove(array $values, array &$from)
     {
-        foreach ($values as $key => $value)
-        {
-            if (is_array($value))
-            {
-                if (isset($from[$key]))
-                {
+        foreach ($values as $key => $value) {
+            if (is_array($value)) {
+                if (isset($from[$key])) {
                     self::_remove($value, $from[$key]);
                 }
-            }
-            else
-            {
-                if (isset($from[$value]))
-                {
+            } else {
+                if (isset($from[$value])) {
                     unset($from[$value]);
                 }
             }
@@ -99,44 +91,41 @@ class VardefModifier
     /**
      * @param array $a1
      * @param array $a2
+     *
      * @return array
      */
     private static function merge(array $a1, array $a2)
     {
-        foreach ($a2 as $key => $value)
-        {
-            if (is_array($value))
-            {
-                if (isset($a1[$key]) && is_array($a1[$key]))
-                {
+        foreach ($a2 as $key => $value) {
+            if (is_array($value)) {
+                if (isset($a1[$key]) && is_array($a1[$key])) {
                     $a1[$key] = static::merge($a1[$key], $value);
-                }
-                else
-                {
+                } else {
                     $a1[$key] = $value;
                 }
-            }
-            else
-            {
+            } else {
                 $a1[$key] = $value;
             }
         }
+
         return $a1;
     }
 
     /**
      * @global array $beanList
+     *
      * @param string $module_name
+     *
      * @return string
+     *
      * @throws VardefModifier_Exception
      */
     private static function getObjectName($module_name)
     {
         global $beanList;
 
-        if (!isset($beanList[$module_name]))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/UnsupportedModule.php';
+        if (!isset($beanList[$module_name])) {
+            require_once __DIR__.'/VardefModifier/Exception/UnsupportedModule.php';
             throw new VardefModifier_Exception_UnsupportedModule("$module_name");
         }
 
@@ -145,60 +134,48 @@ class VardefModifier
 
     /**
      * @param string $module_name
+     *
      * @return string
      */
     private static function _getTableName($module_name, array $dictionary)
     {
         $object_name = self::getObjectName($module_name);
 
-        if (!empty($dictionary[$object_name]['table']))
-        {
+        if (!empty($dictionary[$object_name]['table'])) {
             return $dictionary[$object_name]['table'];
-        }
-        else
-        {
+        } else {
             global $dictionary;
-            if (!empty($dictionary[$object_name]['table']))
-            {
+            if (!empty($dictionary[$object_name]['table'])) {
                 return $dictionary[$object_name]['table'];
-            }
-            else
-            {
+            } else {
                 global $beanFiles;
                 $bean_name = self::getObjectName($module_name);
 
-                if (isset($beanFiles[$bean_name]))
-                {
+                if (isset($beanFiles[$bean_name])) {
                     require_once $beanFiles[$bean_name];
 
-                    if (!class_exists($bean_name))
-                    {
-                        require_once __DIR__ . '/VardefModifier/Exception/UnsupportedModule.php';
+                    if (!class_exists($bean_name)) {
+                        require_once __DIR__.'/VardefModifier/Exception/UnsupportedModule.php';
                         throw new VardefModifier_Exception_UnsupportedModule($module_name);
                     }
 
                     $refl = new ReflectionClass($bean_name);
                     $props = $refl->getDefaultProperties();
 
-                    if (!empty($props['table_name']))
-                    {
+                    if (!empty($props['table_name'])) {
                         return $props['table_name'];
-                    }
-                    else
-                    {
-                        require_once __DIR__ . '/VardefModifier/Exception/UnsupportedModule.php';
+                    } else {
+                        require_once __DIR__.'/VardefModifier/Exception/UnsupportedModule.php';
                         throw new VardefModifier_Exception_UnsupportedModule($module_name);
                     }
-                }
-                else
-                {
-                    require_once __DIR__ . '/VardefModifier/Exception/UnsupportedModule.php';
+                } else {
+                    require_once __DIR__.'/VardefModifier/Exception/UnsupportedModule.php';
                     throw new VardefModifier_Exception_UnsupportedModule($module_name);
                 }
             }
         }
 
-        require_once __DIR__ . '/VardefModifier/Exception/MissingTableName.php';
+        require_once __DIR__.'/VardefModifier/Exception/MissingTableName.php';
         throw new VardefModifier_Exception_MissingTableName($module_name);
     }
 
@@ -229,7 +206,7 @@ class VardefModifier
 
     /**
      * @param string $module_name
-     * @param array $dictionary
+     * @param array  $dictionary
      */
     public function __construct($module_name, array $dictionary)
     {
@@ -240,9 +217,8 @@ class VardefModifier
 
         $dictionary_key = $this->getDictionaryKey();
 
-        if (!isset($this->dictionary[$dictionary_key]))
-        {
-            $this->dictionary[$dictionary_key] = array ();
+        if (!isset($this->dictionary[$dictionary_key])) {
+            $this->dictionary[$dictionary_key] = array();
         }
 
         $this->vardef = $this->dictionary[$dictionary_key];
@@ -254,8 +230,7 @@ class VardefModifier
      */
     public function getDictionaryKey()
     {
-        if (isset(self::$special_dictionary_key_mappings[$this->module_name]))
-        {
+        if (isset(self::$special_dictionary_key_mappings[$this->module_name])) {
             return self::$special_dictionary_key_mappings[$this->module_name];
         }
 
@@ -264,14 +239,15 @@ class VardefModifier
 
     /**
      * @param string $file
+     *
      * @return \VardefModifier
+     *
      * @throws VardefModifier_Exception
      */
     public function yaml($file)
     {
-        if (!file_exists($file))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/InvalidFilePath.php';
+        if (!file_exists($file)) {
+            require_once __DIR__.'/VardefModifier/Exception/InvalidFilePath.php';
             throw new VardefModifier_Exception_InvalidFilePath($file);
         }
 
@@ -279,7 +255,7 @@ class VardefModifier
     }
 
     /**
-     * Sets Defaults, Adds, Removes and Changes the vardef
+     * Sets Defaults, Adds, Removes and Changes the vardef.
      *
      * Uses pretty much the whole class based on a array
      *
@@ -291,33 +267,33 @@ class VardefModifier
      *   - remove:   see VardefModifier::remove
      *
      * @param array $def
+     *
      * @return \VardefModifier
+     *
      * @throws VardefModifier_Exception
      */
     public function def(array $def)
     {
-        static $keys = array ('defaults', 'add', 'change', 'remove');
+        static $keys = array('defaults', 'add', 'change', 'remove');
         // These methods needs to be executed to the correct order
-        foreach ($keys as $key)
-        {
-            if (isset($def[$key]))
-            {
+        foreach ($keys as $key) {
+            if (isset($def[$key])) {
                 $this->$key($def[$key]);
                 unset($def[$key]);
             }
         }
-        if (!empty($def))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
+        if (!empty($def)) {
+            require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
             throw new VardefModifier_Exception_InvalidDefinitionFormat(
-                'Invalid key(s): ' . implode(', ', array_keys($def))
+                'Invalid key(s): '.implode(', ', array_keys($def))
             );
         }
+
         return $this;
     }
 
     /**
-     * Adds fields, indices and relationships to the vardef
+     * Adds fields, indices and relationships to the vardef.
      *
      * Possible keys:
      *
@@ -326,20 +302,18 @@ class VardefModifier
      *   - relationships: see VardefModifier::addRelationships
      *
      * @param array $fields
+     *
      * @return VardefModifier
      */
     public function add(array $keys)
     {
-        foreach ($keys as $key => $fields)
-        {
-            if (!is_array($fields))
-            {
-                require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
+        foreach ($keys as $key => $fields) {
+            if (!is_array($fields)) {
+                require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
                 throw new VardefModifier_Exception_InvalidDefinitionFormat("\$fields must be array");
             }
 
-            switch ($key)
-            {
+            switch ($key) {
                 case 'fields':
                     $this->addFields($fields);
                     break;
@@ -350,7 +324,7 @@ class VardefModifier
                     $this->addRelationships($fields);
                     break;
                 default:
-                    require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
+                    require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
                     throw new VardefModifier_Exception_InvalidDefinitionFormat("$key is not supported, only fields, indices and relationships");
             }
         }
@@ -359,78 +333,80 @@ class VardefModifier
     }
 
     /**
-     * Adds many indices to the vardef from a array definition
+     * Adds many indices to the vardef from a array definition.
      *
      * @todo
+     *
      * @param array $indices
+     *
      * @return \VardefModifier
      */
     public function addIndices(array $indices)
     {
-        foreach ($indices as $fields => $settings)
-        {
+        foreach ($indices as $fields => $settings) {
             if (is_int($fields) &&
                 (is_string($settings) ||
-                (is_array($settings) && isset($settings[0]))))
-            {
+                (is_array($settings) && isset($settings[0])))) {
                 $fields = $settings;
-                $settings = array ();
+                $settings = array();
             }
 
             $this->addIndex($fields, $settings);
         }
+
         return $this;
     }
 
     /**
-     * Adds a index to the vardef
+     * Adds a index to the vardef.
      *
      * @todo
+     *
      * @return \VardefModifier
      */
-    public function addIndex($fields, $settings = array ())
+    public function addIndex($fields, $settings = array())
     {
-        if (is_string($settings) && is_string($fields))
-        {
-            $settings = array ('type' => $settings);
+        if (is_string($settings) && is_string($fields)) {
+            $settings = array('type' => $settings);
         }
 
-        if (!is_array($settings))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
+        if (!is_array($settings)) {
+            require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
             throw new VardefModifier_Exception_InvalidDefinitionFormat("\$settings must be array");
         }
 
         $fields = (array) $fields;
-        $default = array ('fields' => $fields);
+        $default = array('fields' => $fields);
         $index = array_merge($this->getDefault('index'), $default, $settings);
-        $index = array_merge(array ('name' => 'idx_' . implode('_', $index['fields'])), $index);
+        $index = array_merge(array('name' => 'idx_'.implode('_', $index['fields'])), $index);
         $this->vardef['indices'][$index['name']] = $index;
+
         return $this;
     }
 
     /**
-     * Adds relationships to the vardef from a array definition
+     * Adds relationships to the vardef from a array definition.
      *
      * @param array $relationships
+     *
      * @return \VardefModifier
      */
     public function addRelationships(array $relationships)
     {
-        foreach ($relationships as $name => $settings)
-        {
-            if (is_int($name))
-            {
+        foreach ($relationships as $name => $settings) {
+            if (is_int($name)) {
                 $name = $settings;
-                $settings = array ();
+                $settings = array();
             }
             $this->addRelationship($name, $settings);
         }
+
         return $this;
     }
 
     /**
      * @param array $settings
+     *
      * @return \VardefModifier
      */
     private function addActivityRelationship(array $settings)
@@ -438,21 +414,20 @@ class VardefModifier
         $defaults = self::merge(
             $this->getDefault('Activities'), $settings
         );
-        foreach ($defaults as $module => $settings)
-        {
+        foreach ($defaults as $module => $settings) {
             $this->addFlexRelateLink($module, $settings);
         }
+
         return $this;
     }
 
     /**
-     * @param type $module
+     * @param type  $module
      * @param array $settings
      */
-    public function addFlexRelateLink($name, $settings = array ())
+    public function addFlexRelateLink($name, $settings = array())
     {
-        if (empty($settings['module']))
-        {
+        if (empty($settings['module'])) {
             $settings['module'] = $name;
             $name = strtolower($name);
         }
@@ -464,16 +439,16 @@ class VardefModifier
         $module = $settings['module'];
 
         $table_name = self::_getTableName($module, $this->dictionary);
-        $relationship_name = $this->getTableName() . '_flex_relate_' . $table_name;
+        $relationship_name = $this->getTableName().'_flex_relate_'.$table_name;
 
-        $id_name = $settings['prefix'] . '_id';
-        $type_name = $settings['prefix'] . '_type';
+        $id_name = $settings['prefix'].'_id';
+        $type_name = $settings['prefix'].'_type';
 
-        $settings = self::merge($settings, array (
-            'link' => array (
+        $settings = self::merge($settings, array(
+            'link' => array(
                 'relationship' => $relationship_name,
             ),
-            'relationship' => array (
+            'relationship' => array(
                 'lhs_module' => $this->module_name,
                 'lhs_table' => $this->getTableName(),
                 'rhs_key' => $id_name,
@@ -481,7 +456,7 @@ class VardefModifier
                 'rhs_table' => $table_name,
                 'relationship_role_column_value' => $this->module_name,
                 'relationship_role_column' => $type_name,
-            )
+            ),
         ));
 
         $this->addLink($module, $settings['link']);
@@ -492,18 +467,19 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
-    private function addFlexRelate($prefix, $settings = array ())
+    private function addFlexRelate($prefix, $settings = array())
     {
         $defaults = self::merge(
             $this->getDefault('flex_relate'), $settings
         );
 
-        $id_name = $prefix . '_id';
-        $name_name = $prefix . '_name';
-        $type_name = $prefix . '_type';
+        $id_name = $prefix.'_id';
+        $name_name = $prefix.'_name';
+        $type_name = $prefix.'_type';
 
         $defaults['name']['id_name'] = $id_name;
         $defaults['name']['type_name'] = $type_name;
@@ -517,44 +493,38 @@ class VardefModifier
     }
 
     /**
-     * Adds a relationship to the vardef
+     * Adds a relationship to the vardef.
      *
-     * @param string $name: name of the relation or the module name
+     * @param string       $name:     name of the relation or the module name
      * @param string|array $settings: module name or relationship settings
+     *
      * @return \VardefModifier
      */
-    public function addRelationship($name, $settings = array ())
+    public function addRelationship($name, $settings = array())
     {
-        switch ($name)
-        {
+        switch ($name) {
             case 'Activities':
                 return $this->addActivityRelationship($settings);
         }
 
-        $relationship_names = array ($this->object_name);
-        if (is_string($settings))
-        {
-            $settings = array ('module' => $settings);
+        $relationship_names = array($this->object_name);
+        if (is_string($settings)) {
+            $settings = array('module' => $settings);
             $relationship_names[] = $name;
-        }
-        elseif (empty($settings['module']))
-        {
+        } elseif (empty($settings['module'])) {
             $settings['module'] = $name;
             $name = strtolower(self::getObjectName($settings['module']));
-        }
-        else
-        {
+        } else {
             $relationship_names[] = $name;
         }
 
-        switch ($settings['module'])
-        {
+        switch ($settings['module']) {
             case 'Contacts':
-                $settings = self::merge(array (
-                    'name' => array (
+                $settings = self::merge(array(
+                    'name' => array(
                         'rname' => 'name',
-                        'db_concat_fields' => array ('first_name', 'last_name'),
-                    )
+                        'db_concat_fields' => array('first_name', 'last_name'),
+                    ),
                 ), $settings);
         }
 
@@ -562,37 +532,36 @@ class VardefModifier
         $relationship_name = strtolower(implode('_', $relationship_names));
 
         $vname = isset($settings['vname']) ? $settings['vname'] : $this->getVName($name);
-        $rhs_key = $name . '_id';
+        $rhs_key = $name.'_id';
 
-        $_settings = static::merge($this->getDefault('relationship'), array (
-            'id' => array (
+        $_settings = static::merge($this->getDefault('relationship'), array(
+            'id' => array(
                 'name' => $rhs_key,
-                'vname' => $vname
+                'vname' => $vname,
             ),
-            'name' => array (
-                'name' => $name . '_name',
+            'name' => array(
+                'name' => $name.'_name',
                 'vname' => $vname,
                 'module' => $settings['module'],
             ),
-            'link' => array (
-                'name' => $name . '_link',
+            'link' => array(
+                'name' => $name.'_link',
                 'vname' => $vname,
-                'module' => $settings['module']
+                'module' => $settings['module'],
             ),
-            'index' => array (),
-            'relationship' => array (
+            'index' => array(),
+            'relationship' => array(
                 'lhs_module' => $settings['module'],
                 'lhs_table' => self::_getTableName($settings['module'], $this->dictionary),
                 'rhs_module' => $this->module_name,
                 'rhs_table' => $this->getTableName(),
                 'rhs_key' => $rhs_key,
-                'name' => $relationship_name
+                'name' => $relationship_name,
             ),
         ));
 
         // Set the name field to required if set in the root
-        if (isset($settings['required']))
-        {
+        if (isset($settings['required'])) {
             $_settings['name']['required'] = $settings['required'];
         }
 
@@ -614,14 +583,12 @@ class VardefModifier
         $this->vardef['relationships'][$relationship_name] = $_settings['relationship'];
 
         // Add the fields
-        foreach (array ('id', 'name', 'link') as $type)
-        {
+        foreach (array('id', 'name', 'link') as $type) {
             $this->addField($_settings[$type]['name'], $type, $_settings[$type]);
         }
 
         // Add the index if not set to non-array value
-        if (isset($_settings['index']) && is_array($_settings['index']))
-        {
+        if (isset($_settings['index']) && is_array($_settings['index'])) {
             $this->addIndex($_settings['id']['name'], $_settings['index']);
         }
 
@@ -629,47 +596,53 @@ class VardefModifier
     }
 
     /**
-     * Makes changes to the vardefs
+     * Makes changes to the vardefs.
      *
      * @param array $change
+     *
      * @return \VardefModifier
      */
     public function change(array $changes)
     {
         $this->vardef = self::merge($this->vardef, $changes);
+
         return $this;
     }
 
     /**
-     * Removes fields / properties this the vardef
+     * Removes fields / properties this the vardef.
      *
      * @param array $keys
+     *
      * @return \VardefModifier
      */
     public function remove(array $values)
     {
         static::_remove($values, $this->vardef);
+
         return $this;
     }
 
     /**
-     * Changes the default field properties
+     * Changes the default field properties.
      *
      * @param array $field_defaults
+     *
      * @return \VardefModifier
+     *
      * @throws VardefModifier_Exception
      */
     public function defaults(array $field_defaults)
     {
-        foreach ($field_defaults as $name => $field_default)
-        {
+        foreach ($field_defaults as $name => $field_default) {
             $this->setDefault($name, $field_default);
         }
+
         return $this;
     }
 
     /**
-     * Adds fields based on a array definition
+     * Adds fields based on a array definition.
      *
      * The keys in the array should be the field type
      * and the value an array of fields and definitions
@@ -677,52 +650,44 @@ class VardefModifier
      * See VardefModifier::addField for supported field types
      *
      * @param array $fields
+     *
      * @return \VardefModifier
      */
     public function addFields(array $types)
     {
-        foreach ($types as $type => $fields)
-        {
-            if (is_array($fields) && is_string($type))
-            {
-                foreach ($fields as $name => $settings)
-                {
-                    if (is_int($name))
-                    {
+        foreach ($types as $type => $fields) {
+            if (is_array($fields) && is_string($type)) {
+                foreach ($fields as $name => $settings) {
+                    if (is_int($name)) {
                         $name = $settings;
                         $this->addField($name, $type);
-                    }
-                    else
-                    {
+                    } else {
                         $this->addField($name, $type, $settings);
                     }
                 }
-            }
-            else
-            {
-                require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
-                throw new VardefModifier_Exception_InvalidDefinitionFormat("Not Implemented");
+            } else {
+                require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
+                throw new VardefModifier_Exception_InvalidDefinitionFormat('Not Implemented');
             }
         }
+
         return $this;
     }
 
     /**
-     *
      * @param string $name
      * @param string $type
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
-    public function addField($name, $type, array $settings = array ())
+    public function addField($name, $type, array $settings = array())
     {
-        if (!is_string($name) || empty($name))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
-            throw new VardefModifier_Exception_InvalidDefinitionFormat("Invalid type of name");
+        if (!is_string($name) || empty($name)) {
+            require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
+            throw new VardefModifier_Exception_InvalidDefinitionFormat('Invalid type of name');
         }
-        switch ($type)
-        {
+        switch ($type) {
             case 'enum':
                 $this->addEnum($name, $settings);
                 break;
@@ -751,22 +716,21 @@ class VardefModifier
                 $this->addFlexRelate($name, $settings);
                 break;
             default:
-                if ($this->hasDefault($type))
-                {
+                if ($this->hasDefault($type)) {
                     $this->addDefaultField($name, $this->getDefault($type), $settings);
-                }
-                else
-                {
-                    require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
+                } else {
+                    require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
                     throw new VardefModifier_Exception_InvalidDefinitionFormat("Invalid field type: '$type'");
                 }
         }
+
         return $this;
     }
 
     /**
      * @param string $name
-     * @return boolean
+     *
+     * @return bool
      * @return \VardefModifier
      */
     public function hasField($name)
@@ -779,35 +743,35 @@ class VardefModifier
      */
     public function addCurrencyRelation()
     {
-        if (!$this->hasField('currency_id'))
-        {
-            $this->addRelationship('Currencies', array (
-                'id' => array (
+        if (!$this->hasField('currency_id')) {
+            $this->addRelationship('Currencies', array(
+                'id' => array(
                     'type' => 'currency_id',
                     'dbType' => 'id',
                     'group' => 'currency_id',
                     'default' => '-99',
-                    'function' => array (
+                    'function' => array(
                         'name' => 'getCurrencyDropDown',
-                        'returns' => 'html'
+                        'returns' => 'html',
                     ),
                 ),
-                'name' => array (
-                    'function' => array (
+                'name' => array(
+                    'function' => array(
                         'name' => 'getCurrencyNameDropDown',
                         'returns' => 'html',
-                    )
-                )
+                    ),
+                ),
             ));
-            $this->addRelate('currency_symbol', array (
+            $this->addRelate('currency_symbol', array(
                 'module' => 'Currencies',
                 'rname' => 'symbol',
-                'function' => array (
+                'function' => array(
                     'name' => 'getCurrencySymbolDropDown',
                     'returns' => 'html',
-                )
+                ),
             ));
         }
+
         return $this;
     }
 
@@ -817,6 +781,7 @@ class VardefModifier
     public function get()
     {
         $this->dictionary[$this->getDictionaryKey()] = $this->vardef;
+
         return $this->dictionary;
     }
 
@@ -827,9 +792,8 @@ class VardefModifier
     {
         $this->table_name = self::_getTableName($this->module_name, $this->dictionary);
 
-        if (empty($this->table_name))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/MissingTableName.php';
+        if (empty($this->table_name)) {
+            require_once __DIR__.'/VardefModifier/Exception/MissingTableName.php';
             throw new VardefModifier_Exception_MissingTableName($this->module_name);
         }
 
@@ -838,21 +802,23 @@ class VardefModifier
 
     /**
      * @param string $type
+     *
      * @return array
      */
     private function getDefault($type)
     {
-        if (!isset($this->defaults[$type]))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/UnsupportedDefaultsType.php';
+        if (!isset($this->defaults[$type])) {
+            require_once __DIR__.'/VardefModifier/Exception/UnsupportedDefaultsType.php';
             throw new VardefModifier_Exception_UnsupportedDefaultsType($type);
         }
+
         return $this->defaults[$type];
     }
 
     /**
      * @param string $type
-     * @return boolean
+     *
+     * @return bool
      */
     private function hasDefault($type)
     {
@@ -861,14 +827,14 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $field_default
+     * @param array  $field_default
+     *
      * @throws VardefModifier_Exception
      */
     private function setDefault($name, array $field_default)
     {
-        if (!isset($this->defaults[$name]))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/UnsupportedDefaultsType.php';
+        if (!isset($this->defaults[$name])) {
+            require_once __DIR__.'/VardefModifier/Exception/UnsupportedDefaultsType.php';
             throw new VardefModifier_Exception_UnsupportedDefaultsType($name);
         }
 
@@ -877,7 +843,8 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
     private function addName($name, array $settings)
@@ -889,22 +856,23 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
     private function addRelate($name, array $settings)
     {
-        if (!isset($settings['module']))
-        {
-            require_once __DIR__ . '/VardefModifier/Exception/InvalidDefinitionFormat.php';
-            throw new VardefModifier_Exception_InvalidDefinitionFormat("Missing module");
+        if (!isset($settings['module'])) {
+            require_once __DIR__.'/VardefModifier/Exception/InvalidDefinitionFormat.php';
+            throw new VardefModifier_Exception_InvalidDefinitionFormat('Missing module');
         }
 
-        $default = array (
+        $default = array(
             'rname' => $name,
             'table' => self::_getTableName($settings['module'], $this->dictionary),
-            'id_name' => strtolower(self::getObjectName($settings['module'])) . '_id',
+            'id_name' => strtolower(self::getObjectName($settings['module'])).'_id',
         );
+
         return $this->addDefaultField(
             $name, $this->getDefault('relate'), $default, $settings
         );
@@ -912,62 +880,63 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
      */
-    private function addAddress($name, array $settings = array ())
+    private function addAddress($name, array $settings = array())
     {
         $defaults = self::merge($this->getDefault('address'), $settings);
         $all = $defaults['all'];
         unset($defaults['all']);
-        if (empty($all['group']))
-            $all['group'] = $name . '_address';
-        foreach ($defaults as $field_name => $field_settings)
-        {
-            if (is_array($field_settings))
-            {
+        if (empty($all['group'])) {
+            $all['group'] = $name.'_address';
+        }
+        foreach ($defaults as $field_name => $field_settings) {
+            if (is_array($field_settings)) {
                 $field_settings = self::merge($all, $field_settings);
                 $this->addField(
-                    $name . '_address_' . $field_name, $field_settings['type'], $field_settings
+                    $name.'_address_'.$field_name, $field_settings['type'], $field_settings
                 );
             }
         }
+
         return $this;
     }
 
     /**
      * @param string $name
      * @param array
+     *
      * @return \VardefModifier
      */
-    private function addCurrency($name, array $settings = array ())
+    private function addCurrency($name, array $settings = array())
     {
         $template = $this->getDefault('currency');
+
         return $this->
                 addCurrencyRelation()->
                 addDefaultField($name, $template, $settings)->
-                addDefaultField($name . '_usdollar', $template, array ('group' => $name), $settings);
+                addDefaultField($name.'_usdollar', $template, array('group' => $name), $settings);
     }
 
     /**
-     * Adds a link field
+     * Adds a link field.
      *
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
-    private function addLink($name, array $settings = array ())
+    private function addLink($name, array $settings = array())
     {
-        if (empty($settings['module']))
-        {
+        if (empty($settings['module'])) {
             $settings['module'] = $name;
             $name = strtolower($name);
         }
 
         $object_name = self::getObjectName($settings['module']);
-        $relationship_names = array ($object_name);
+        $relationship_names = array($object_name);
 
-        if (!empty($settings['relationship_name']))
-        {
+        if (!empty($settings['relationship_name'])) {
             $relationship_names[] = $settings['relationship_name'];
             // No need to store this in the vardef...
             unset($settings['relationship_name']);
@@ -976,9 +945,9 @@ class VardefModifier
         $relationship_names[] = $this->module_name;
 
         $this->addFieldToVardef($name, array_merge(
-            $this->getDefault('link'), array (
+            $this->getDefault('link'), array(
                 'bean_name' => $object_name,
-                'relationship' => strtolower(implode('_', $relationship_names))
+                'relationship' => strtolower(implode('_', $relationship_names)),
             ), $settings
         ));
 
@@ -987,39 +956,43 @@ class VardefModifier
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
-    private function addEnum($name, array $settings = array ())
+    private function addEnum($name, array $settings = array())
     {
         return $this->addEnumLike($name, $this->getDefault('enum'), $settings);
     }
 
     /**
      * @param string $name
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return \VardefModifier
      */
-    private function addMultienum($name, array $settings = array ())
+    private function addMultienum($name, array $settings = array())
     {
         return $this->addEnumLike($name, $this->getDefault('multienum'), $settings);
     }
 
     /**
      * @param string $name
-     * @param array $settings
-     * @param array $default
+     * @param array  $settings
+     * @param array  $default
+     *
      * @return \VardefModifier
      */
     private function addEnumLike($name, array $default, array $settings)
     {
         return $this->addDefaultField(
-            $name, array ('options' => strtolower($this->module_name . '_' . $name) . '_list'), $default, $settings
+            $name, array('options' => strtolower($this->module_name.'_'.$name).'_list'), $default, $settings
         );
     }
 
     /**
      * @param string $name
+     *
      * @return \VardefModifier
      */
     private function addDefaultField($name)
@@ -1029,6 +1002,7 @@ class VardefModifier
         $this->addFieldToVardef($name, call_user_func_array(
             'array_merge', $args
         ));
+
         return $this;
     }
 
@@ -1042,11 +1016,12 @@ class VardefModifier
 
     /**
      * @param string $name
+     *
      * @return array
      */
     private function addFieldToVardef($name, array $definition)
     {
-        $this->vardef['fields'][$name] = array_merge(array (
+        $this->vardef['fields'][$name] = array_merge(array(
             'name' => $name,
             'vname' => $this->getVName($name),
         ), $definition);
@@ -1057,7 +1032,6 @@ class VardefModifier
      */
     private function getVName($name)
     {
-        return 'LBL_' . strtoupper($name);
+        return 'LBL_'.strtoupper($name);
     }
-
 }

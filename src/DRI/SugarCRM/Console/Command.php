@@ -12,7 +12,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class Command extends BaseCommand
 {
-
     /**
      * @var InputInterface
      */
@@ -29,7 +28,7 @@ abstract class Command extends BaseCommand
     protected $dialog;
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -40,5 +39,4 @@ abstract class Command extends BaseCommand
         $this->output = $output;
         $this->dialog = $this->getHelper('dialog');
     }
-
 }

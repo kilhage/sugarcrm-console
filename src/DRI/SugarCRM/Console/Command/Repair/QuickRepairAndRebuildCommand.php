@@ -12,34 +12,34 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
 {
-
     protected function configure()
     {
         $this->addOption(
-            "auto-execute",
-            "a",
+            'auto-execute',
+            'a',
             InputOption::VALUE_OPTIONAL,
-            ""
+            ''
         );
 
         $this->addOption(
-            "output-html",
-            "o",
+            'output-html',
+            'o',
             InputOption::VALUE_OPTIONAL,
-            ""
+            ''
         );
     }
 
     public function getQuickRepairAndRebuild()
     {
-        require_once('modules/Administration/QuickRepairAndRebuild.php');
+        require_once 'modules/Administration/QuickRepairAndRebuild.php';
         require_once 'include/utils/layout_utils.php';
         $repairandclear = new \RepairAndClear();
+
         return $repairandclear;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -48,8 +48,8 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
     {
         $output->writeln($this->getMessage());
 
-        $auto_execute = $input->getOption("auto-execute");
-        $show_output = !!$input->getOption("output-html");
+        $auto_execute = $input->getOption('auto-execute');
+        $show_output = !!$input->getOption('output-html');
 
         $this->getQuickRepairAndRebuild()->repairAndClearAll(
             $this->getActions(),
@@ -59,15 +59,13 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             ''
         );
 
-        $output->writeln("Done");
+        $output->writeln('Done');
     }
 
     protected function getModules()
     {
-
     }
 
     abstract protected function getActions();
     abstract protected function getMessage();
-
 }

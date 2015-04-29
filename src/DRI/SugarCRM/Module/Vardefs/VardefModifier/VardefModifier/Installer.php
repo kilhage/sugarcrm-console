@@ -1,13 +1,12 @@
 <?php
 
-require_once dirname(__FILE__) . '/Exception.php';
+require_once dirname(__FILE__).'/Exception.php';
 
 /**
  * @author Emil Kilhage
  */
 class VardefModifier_Installer
 {
-
     private static $help = "
 ****************************************************
 Installs an empty yaml vardef addition for a module
@@ -34,7 +33,7 @@ Installs an empty yaml vardef addition for a module
     private $modifier_dir;
     private $core = false;
     private $force = false;
-    private $modules = array ();
+    private $modules = array();
 
     /**
      * @param array $args
@@ -48,12 +47,9 @@ Installs an empty yaml vardef addition for a module
 
     private function parseArgs(array $args)
     {
-        foreach ($args as $arg)
-        {
-            if (strpos($arg, '-') === 0)
-            {
-                switch ($arg)
-                {
+        foreach ($args as $arg) {
+            if (strpos($arg, '-') === 0) {
+                switch ($arg) {
                     case '--core':
                     case '-c':
                         $this->core = true;
@@ -69,9 +65,7 @@ Installs an empty yaml vardef addition for a module
                         throw new VardefModifier_Exception("Invalid flag: $args");
                         break;
                 }
-            }
-            else
-            {
+            } else {
                 $this->modules[] = $arg;
             }
         }
@@ -81,15 +75,14 @@ Installs an empty yaml vardef addition for a module
     {
         global $beanList;
 
-        if (empty($this->modules))
-        {
-            throw new VardefModifier_Exception("Missing modules");
+        if (empty($this->modules)) {
+            throw new VardefModifier_Exception('Missing modules');
         }
 
-        foreach ($this->modules as $module)
-        {
-            if (!isset($beanList[$module]))
+        foreach ($this->modules as $module) {
+            if (!isset($beanList[$module])) {
                 throw new VardefModifier_Exception("Invalid module: $module \n");
+            }
 
             echo "* Installing $module \n";
             $this->writePhpFile($module);
@@ -99,13 +92,15 @@ Installs an empty yaml vardef addition for a module
 
     private function getYamlTemplate($module)
     {
-        $file = file_get_contents(dirname(dirname(__FILE__)) . '/vardefs.template.yml');
+        $file = file_get_contents(dirname(dirname(__FILE__)).'/vardefs.template.yml');
+
         return str_replace('$module', $module, $file);
     }
 
     private function getPhpTemplate($module)
     {
         $class_name = __CLASS__;
+
         return <<<PHP
 <?php
 
@@ -131,6 +126,7 @@ PHP;
     private function getPhpCoreVardefAddition($module)
     {
         $class_name = __CLASS__;
+
         return <<<PHP
 /* Installed by $class_name */
 {$this->getPhpCode($module)}
@@ -143,6 +139,7 @@ PHP;
     {
         $dir = $this->core ? "modules/$module" : "custom/modules/$module";
         is_dir($dir) or mkdir($dir, 0755, true);
+
         return "$dir/vardefs.yml";
     }
 
@@ -152,38 +149,30 @@ PHP;
             "modules/$module" :
             "custom/Extension/modules/$module/Ext/Vardefs";
         is_dir($dir) or mkdir($dir, 0755, true);
-        return "$dir/" . ($this->core ? "vardefs.php" : "yaml_vardefs.php");
+
+        return "$dir/".($this->core ? 'vardefs.php' : 'yaml_vardefs.php');
     }
 
     private function writePhpFile($module)
     {
-        if (!$this->core)
-        {
+        if (!$this->core) {
             $file_path = $this->getPhpFilePath($module);
-            if ($this->force || !file_exists($file_path))
-            {
+            if ($this->force || !file_exists($file_path)) {
                 echo "Creating: $file_path \n";
                 file_put_contents($file_path, $this->getPhpTemplate($module));
-            }
-            else
-            {
+            } else {
                 echo "$file_path does already exists, skipping... \n";
             }
-        }
-        else
-        {
+        } else {
             $filename = $this->getPhpFilePath($module);
             $content = file_get_contents($filename);
-            if ($this->force || strpos($content, "VardefModifier::modify(") === false)
-            {
+            if ($this->force || strpos($content, 'VardefModifier::modify(') === false) {
                 echo "Installing in $filename \n";
                 $content = rtrim($content, "?>\n");
                 $content .= "\n\n";
                 $content .= $this->getPhpCoreVardefAddition($module);
                 file_put_contents($filename, $content);
-            }
-            else
-            {
+            } else {
                 echo "$filename is already installed, skipping... \n";
             }
         }
@@ -192,15 +181,11 @@ PHP;
     private function writeYamlFile($module)
     {
         $file_path = $this->getYamlFilePath($module);
-        if ($this->force || !file_exists($file_path))
-        {
+        if ($this->force || !file_exists($file_path)) {
             echo "Creating: $file_path \n";
             file_put_contents($file_path, $this->getYamlTemplate($module));
-        }
-        else
-        {
+        } else {
             echo "$file_path does alredy exists, skipping... \n";
         }
     }
-
 }

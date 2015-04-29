@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LabelsCommand extends ApplicationCommand
 {
-
     /**
      * @var LanguageManager
      */
@@ -28,14 +27,14 @@ class LabelsCommand extends ApplicationCommand
 
     protected function configure()
     {
-        $this->setName("module:labels")
-            ->addArgument("module", InputArgument::REQUIRED, "module to list labels in")
-            ->addOption("language", 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, "", array ('default'))
-            ->setDescription("Lists all labels in a module");
+        $this->setName('module:labels')
+            ->addArgument('module', InputArgument::REQUIRED, 'module to list labels in')
+            ->addOption('language', 'l', InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, '', array('default'))
+            ->setDescription('Lists all labels in a module');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -43,28 +42,27 @@ class LabelsCommand extends ApplicationCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         global $beanList;
-        $preg = $input->getArgument("module");
-        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption("language"));
+        $preg = $input->getArgument('module');
+        $languages = $this->languageManager->getLanguagesBasedOnOptions($input->getOption('language'));
 
-        if (strpos($preg, "/") !== 0) {
+        if (strpos($preg, '/') !== 0) {
             $preg = "/^$preg$/";
         }
 
         $modules = array_keys($beanList);
         foreach ($languages as $language) {
             $this->languageManager->setCurrent($language);
-            foreach ($modules as $module)
-            {
-                if (!preg_match($preg, $module))
+            foreach ($modules as $module) {
+                if (!preg_match($preg, $module)) {
                     continue;
+                }
 
                 $labels = $this->languageManager->getModuleLanguage($module, $language, true);
 
                 $output->writeln(" - $module:");
                 $output->writeln(var_export($labels, true));
-                $output->writeln("===================================");
+                $output->writeln('===================================');
             }
         }
     }
-
 }

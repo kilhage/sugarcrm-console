@@ -12,25 +12,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CustomFieldsCommand extends ApplicationCommand
 {
-
     protected function configure()
     {
-        $this->setName("repair:custom-fields")
-            ->addOption("dry", null, InputOption::VALUE_NONE, "Only print the sql's")
-            ->setDescription("Repair All Custom Fields");
+        $this->setName('repair:custom-fields')
+            ->addOption('dry', null, InputOption::VALUE_NONE, "Only print the sql's")
+            ->setDescription('Repair All Custom Fields');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Repairing all custom tables");
+        $output->writeln('Repairing all custom tables');
 
-        $dry = $input->getOption("dry");
+        $dry = $input->getOption('dry');
 
         $execute = !$dry;
 
@@ -38,16 +37,14 @@ class CustomFieldsCommand extends ApplicationCommand
 
         require_once 'modules/DynamicFields/FieldCases.php';
 
-        foreach ($beanList as $module_name => $object_name)
-        {
+        foreach ($beanList as $module_name => $object_name) {
             $bean = \BeanFactory::getBean($module_name);
 
             if ($bean instanceof \SugarBean) {
                 $defs = $bean->getFieldDefinitions();
 
                 if (is_array($defs)) {
-                    foreach ($defs as $field_name => $def)
-                    {
+                    foreach ($defs as $field_name => $def) {
                         if (!empty($def['custom_module'])) {
                             $df = new \DynamicField($bean->module_dir);
 
@@ -63,7 +60,6 @@ class CustomFieldsCommand extends ApplicationCommand
             }
         }
 
-        $output->writeln("Done");
+        $output->writeln('Done');
     }
-
 }

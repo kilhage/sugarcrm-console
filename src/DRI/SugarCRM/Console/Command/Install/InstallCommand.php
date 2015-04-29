@@ -12,29 +12,28 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InstallCommand extends Command
 {
+    /**
+     * @var array
+     */
+    private static $required = array(
+        'setup_db_database_name',
+        'setup_license_key',
+        'setup_site_url',
+        'setup_site_admin_password',
+    );
+
+    private static $aliasMap = array(
+        'setup_site_url' => 'u',
+    );
+
+    private static $parameterMap = array(
+
+    );
 
     /**
      * @var array
      */
-    private static $required = array (
-        "setup_db_database_name",
-        "setup_license_key",
-        "setup_site_url",
-        "setup_site_admin_password",
-    );
-
-    private static $aliasMap = array (
-        "setup_site_url" => "u",
-    );
-
-    private static $parameterMap = array (
-
-    );
-
-    /**
-     * @var array
-     */
-    private $config = array (
+    private $config = array(
         'setup_db_host_name' => 'localhost',
         'setup_db_sugarsales_user' => 'root',
         'setup_db_sugarsales_password' => '',
@@ -76,8 +75,8 @@ class InstallCommand extends Command
      */
     protected function configure()
     {
-        $this->setName("install")
-            ->setDescription("Installs the sugarcrm app");
+        $this->setName('install')
+            ->setDescription('Installs the sugarcrm app');
 
         foreach ($this->config as $key => $default) {
             $envDefault = $this->getKeyFromEnv($key);
@@ -85,18 +84,19 @@ class InstallCommand extends Command
             $name = isset(self::$parameterMap[$key]) ? self::$parameterMap[$key] : $key;
             $alias = isset(self::$aliasMap[$key]) ? self::$aliasMap[$key] : null;
 
-            $this->addOption($name, $alias, InputOption::VALUE_REQUIRED, "", $envDefault !== false ? $envDefault : $default);
+            $this->addOption($name, $alias, InputOption::VALUE_REQUIRED, '', $envDefault !== false ? $envDefault : $default);
         }
 
-        $this->addOption("auto_reinstall", "r", InputOption::VALUE_NONE, $this->getKeyFromEnv("auto_reinstall") ? : null);
-        $this->addOption("auto_drop_tables", "a", InputOption::VALUE_NONE, $this->getKeyFromEnv("auto_drop_tables") ? : null);
+        $this->addOption('auto_reinstall', 'r', InputOption::VALUE_NONE, $this->getKeyFromEnv('auto_reinstall') ?: null);
+        $this->addOption('auto_drop_tables', 'a', InputOption::VALUE_NONE, $this->getKeyFromEnv('auto_drop_tables') ?: null);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
+     *
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -106,7 +106,7 @@ class InstallCommand extends Command
         $this->createConfigSi();
 
         try {
-            $this->call($this->getOption("setup_site_url"));
+            $this->call($this->getOption('setup_site_url'));
         } catch (\Exception $e) {
             $this->removeConfigSi();
             throw $e;
@@ -120,26 +120,26 @@ class InstallCommand extends Command
      */
     private function checkDatabase()
     {
-        $dbName = $this->getOption("setup_db_database_name");
-        $dbType = $this->getOption("setup_db_type");
+        $dbName = $this->getOption('setup_db_database_name');
+        $dbType = $this->getOption('setup_db_type');
 
-        if ($dbType !== "mysql") {
+        if ($dbType !== 'mysql') {
             throw new \Exception("Unsupported db type: $dbType");
         }
 
         $db = new \mysqli(
-            $this->getOption("setup_db_host_name"),
-            $this->getOption("setup_db_admin_user_name"),
-            $this->getOption("setup_db_admin_password")
+            $this->getOption('setup_db_host_name'),
+            $this->getOption('setup_db_admin_user_name'),
+            $this->getOption('setup_db_admin_password')
         );
 
         if ($db->select_db($dbName)) {
-            $auto_drop = $this->getOption("auto_drop_tables")
+            $auto_drop = $this->getOption('auto_drop_tables')
                 || $this->askForKey(
-                    "auto_drop_tables",
+                    'auto_drop_tables',
                     "<question>Database exist: $dbName, drop it?</question> <comment>(y/n)</comment>: ",
-                    "n"
-                ) === "y";
+                    'n'
+                ) === 'y';
 
             if ($auto_drop) {
                 $this->output->writeln("<comment>Dropping table $dbName</comment>");
@@ -148,7 +148,7 @@ class InstallCommand extends Command
                 throw new \Exception("Database exist: $dbName");
             }
         } else {
-            $this->output->writeln("<comment>DB does not exist</comment>");
+            $this->output->writeln('<comment>DB does not exist</comment>');
         }
     }
 
@@ -158,6 +158,7 @@ class InstallCommand extends Command
     private function configExists()
     {
         $filePath = $this->getConfigPath();
+
         return file_exists($filePath);
     }
 
@@ -177,17 +178,17 @@ class InstallCommand extends Command
     private function checkConfig()
     {
         if ($this->configExists()) {
-            $autoReinstall = $this->getOption("auto_reinstall")
+            $autoReinstall = $this->getOption('auto_reinstall')
                 || $this->askForKey(
-                    "auto_reinstall",
-                    "<question>SugarCRM already seem to be installed, reinstall?</question> <comment>(y/n)</comment>: ",
-                    "n"
-                ) === "y";
+                    'auto_reinstall',
+                    '<question>SugarCRM already seem to be installed, reinstall?</question> <comment>(y/n)</comment>: ',
+                    'n'
+                ) === 'y';
 
             if ($autoReinstall) {
                 $this->removeConfig();
             } else {
-                throw new \Exception("SugarCRM already seem to be installed");
+                throw new \Exception('SugarCRM already seem to be installed');
             }
         }
     }
@@ -208,7 +209,7 @@ class InstallCommand extends Command
      *
      * @return mixed|string
      */
-    private function getOption($key, $question = "<question>Please enter a value of config key %s:</question> ", $default = null)
+    private function getOption($key, $question = '<question>Please enter a value of config key %s:</question> ', $default = null)
     {
         $value = $this->input->getOption($key);
 
@@ -229,7 +230,7 @@ class InstallCommand extends Command
      */
     private function createConfigSi()
     {
-        $config = array ();
+        $config = array();
 
         foreach ($this->config as $key => $default) {
             $value = $this->getOption($key);
@@ -248,7 +249,7 @@ class InstallCommand extends Command
 
 PHP;
 
-        $this->output->writeln("<info>Creating config_si.php</info>");
+        $this->output->writeln('<info>Creating config_si.php</info>');
 
         file_put_contents($filePath, $data);
     }
@@ -260,7 +261,7 @@ PHP;
      *
      * @return string
      */
-    private function askForKey($key, $question, $default = "")
+    private function askForKey($key, $question, $default = '')
     {
         return $this->dialog->ask(
             $this->output,
@@ -276,8 +277,9 @@ PHP;
      */
     private function getKeyFromEnv($key)
     {
-        $prefix = "SUGARCRM_DEFAULT_" . strtoupper($key);
+        $prefix = 'SUGARCRM_DEFAULT_'.strtoupper($key);
         $value = getenv($prefix);
+
         return $value;
     }
 
@@ -290,8 +292,8 @@ PHP;
     private function fix($key, $value)
     {
         switch ($key) {
-            case "setup_site_url":
-                if (strpos($value, "http") !== 0) {
+            case 'setup_site_url':
+                if (strpos($value, 'http') !== 0) {
                     $value = "http://$value";
                     $this->output->writeln("<comment>Prepending url with http:// - result: $value</comment>");
                 }
@@ -307,6 +309,7 @@ PHP;
     {
         $appPath = $this->getAppPath();
         $filePath = "$appPath/config_si.php";
+
         return $filePath;
     }
 
@@ -317,6 +320,7 @@ PHP;
     {
         $appPath = $this->getAppPath();
         $filePath = "$appPath/config.php";
+
         return $filePath;
     }
 
@@ -343,13 +347,13 @@ PHP;
      */
     private function call($url)
     {
-        $si_results = "";
+        $si_results = '';
 
-        $server_page = $url . "/install.php";
+        $server_page = $url.'/install.php';
 
         $this->output->writeln("<info>Installing SugarCRM located at: $server_page ...</info>");
 
-        $fh = fopen($server_page . "?goto=SilentInstall&cli=true", "r") or die($php_errormsg);
+        $fh = fopen($server_page.'?goto=SilentInstall&cli=true', 'r') or die($php_errormsg);
 
         while (!feof($fh)) {
             $si_results .= fread($fh, 1048576);
@@ -370,10 +374,10 @@ PHP;
             preg_match('/Exit (.*)/', $si_results, $message);
 
             if (count($message) == 2) {
-                $this->output->writeln("<error>Error.  Most likely your configuration file is invalid.  Message returned was</error>");
+                $this->output->writeln('<error>Error.  Most likely your configuration file is invalid.  Message returned was</error>');
             } else {
                 if ($info['timed_out']) {
-                    $this->output->writeln("<error>Error.  Connection timed out!</error>");
+                    $this->output->writeln('<error>Error.  Connection timed out!</error>');
                 } else {
                     $this->output->writeln("<error>Unknown error.  I don't know about this type of error message:</error>");
                 }
@@ -381,5 +385,4 @@ PHP;
             $this->output->writeln($si_results);
         }
     }
-
 }

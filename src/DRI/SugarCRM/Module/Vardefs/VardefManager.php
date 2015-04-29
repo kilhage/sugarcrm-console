@@ -7,7 +7,6 @@ namespace DRI\SugarCRM\Module\Vardefs;
  */
 class VardefManager
 {
-
     private $module;
 
     public function __construct($module)
@@ -22,14 +21,13 @@ class VardefManager
      */
     public function getFieldsByType($type)
     {
-        $fields = array ();
+        $fields = array();
 
         foreach ($this->getFields() as $field) {
-            if ($field["type"] == $type) {
+            if ($field['type'] == $type) {
                 $fields[] = $field;
             }
         }
-
 
         return $fields;
     }
@@ -51,7 +49,7 @@ class VardefManager
      */
     public function getFieldsByTypes(array $types)
     {
-        $fields = array ();
+        $fields = array();
 
         foreach ($types as $type) {
             $fields = array_merge($fields, $this->getFieldsByType($type));
@@ -59,5 +57,4 @@ class VardefManager
 
         return $fields;
     }
-
 }

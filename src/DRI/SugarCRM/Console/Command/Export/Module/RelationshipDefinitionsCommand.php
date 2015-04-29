@@ -8,14 +8,12 @@ use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use InvalidArgumentException;
 
 /**
  * @author Emil Kilhage
  */
 class RelationshipDefinitionsCommand extends ApplicationCommand
 {
-
     /**
      * @var LanguageManager
      */
@@ -35,26 +33,27 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
      */
     protected function configure()
     {
-        $this->setName("export:module:relationships:definitions")
-            ->addOption("module", "m", InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, "white/black listed modules")
-            ->addOption("csv", null, InputOption::VALUE_NONE, "Export definitions as csv")
-            ->addOption("black-list-modules", "b", InputOption::VALUE_NONE, "Will black list all modules listed instead of white list")
-            ->addOption("output", "o", InputOption::VALUE_REQUIRED, "Target output file/stream", "php://stdout")
-            ->addOption("delimiter", "d", InputOption::VALUE_REQUIRED, "csv setting", ",")
-            ->addOption("enclosure", "e", InputOption::VALUE_REQUIRED, "csv setting", '"')
-            ->setDescription("Exports Module Definitions in different formats");
+        $this->setName('export:module:relationships:definitions')
+            ->addOption('module', 'm', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'white/black listed modules')
+            ->addOption('csv', null, InputOption::VALUE_NONE, 'Export definitions as csv')
+            ->addOption('black-list-modules', 'b', InputOption::VALUE_NONE, 'Will black list all modules listed instead of white list')
+            ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Target output file/stream', 'php://stdout')
+            ->addOption('delimiter', 'd', InputOption::VALUE_REQUIRED, 'csv setting', ',')
+            ->addOption('enclosure', 'e', InputOption::VALUE_REQUIRED, 'csv setting', '"')
+            ->setDescription('Exports Module Definitions in different formats');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
+     *
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption("csv")) {
+        if ($input->getOption('csv')) {
             $this->outputCsv();
         } else {
             $this->outputInline();
@@ -78,9 +77,9 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
      */
     private function outputCsv()
     {
-        $fileName = $this->input->getOption("output");
+        $fileName = $this->input->getOption('output');
 
-        $handle = fopen($fileName, "w+");
+        $handle = fopen($fileName, 'w+');
 
         $this->fputcsv($handle, $this->getHeaders());
 
@@ -98,8 +97,8 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
         fputcsv(
             $handle,
             $columns,
-            $this->input->getOption("delimiter"),
-            $this->input->getOption("enclosure")
+            $this->input->getOption('delimiter'),
+            $this->input->getOption('enclosure')
         );
     }
 
@@ -110,21 +109,21 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
     {
         $modules = $this->getModules();
 
-        $rows = array ();
+        $rows = array();
 
         $relationships = \SugarRelationshipFactory::getInstance()->getRelationshipDefs();
 
         foreach ($relationships as $name => $relationship) {
-            $row = array ();
+            $row = array();
 
             $add = false;
 
             foreach ($modules as $module) {
-                if (!empty($relationship["lhs_module"]) && $relationship["lhs_module"] == $module) {
+                if (!empty($relationship['lhs_module']) && $relationship['lhs_module'] == $module) {
                     $add = true;
                 }
 
-                if (!empty($relationship["rhs_module"]) && $relationship["rhs_module"] == $module) {
+                if (!empty($relationship['rhs_module']) && $relationship['rhs_module'] == $module) {
                     $add = true;
                 }
             }
@@ -152,7 +151,7 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
      */
     private function getHeaders()
     {
-        $headers = array (
+        $headers = array(
             'relationship_name',
             'lhs_module',
             'lhs_table',
@@ -178,12 +177,12 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
     {
         global $beanList;
 
-        $modules = $this->input->getOption("module");
+        $modules = $this->input->getOption('module');
 
-        if (empty($modules) || $this->input->getOption("black-list-modules")) {
+        if (empty($modules) || $this->input->getOption('black-list-modules')) {
             $allModules = array_keys($beanList);
 
-            if ($this->input->getOption("black-list-modules")) {
+            if ($this->input->getOption('black-list-modules')) {
                 foreach ($modules as $module) {
                     $key = array_search($module, $allModules);
 
@@ -198,5 +197,4 @@ class RelationshipDefinitionsCommand extends ApplicationCommand
 
         return $modules;
     }
-
 }
