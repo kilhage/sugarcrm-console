@@ -20,9 +20,9 @@ class RunSQLCommand extends ApplicationCommand
     protected function configure()
     {
         $this->setName('db:sql')
-            ->addArgument('sql', InputArgument::REQUIRED, 'module to list labels in')
+            ->addArgument('sql', InputArgument::REQUIRED, 'The SQL')
             ->addOption('dry', 'd', InputOption::VALUE_NONE)
-            ->setDescription('Lists all labels in a module');
+            ->setDescription('Executes an SQL query');
     }
 
     /**
