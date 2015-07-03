@@ -23,7 +23,7 @@ Installation
 
 #### Checkout
 ```sh
-git clone git@gitlab.scm.dri.pt:dri-nordic/sugarcrm-console.git /usr/local/share/sugarcrm-console
+git clone git@gitlab.dri-nordic.com:dri-nordic/sugarcrm-console.git /usr/local/share/sugarcrm-console
 cd /usr/local/share/sugarcrm-console
 ```
 
