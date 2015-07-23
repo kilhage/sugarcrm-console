@@ -33,7 +33,8 @@ class ListModulesCommand extends ApplicationCommand
         $this->setName('module:list')
             ->addOption('custom', null, InputOption::VALUE_NONE)
             ->addOption('ootb', null, InputOption::VALUE_NONE)
-            ->addOption('all', null, InputOption::VALUE_NONE);
+            ->addOption('all', null, InputOption::VALUE_NONE)
+            ->setDescription('Lists all modules available in the system');
     }
 
     /**
