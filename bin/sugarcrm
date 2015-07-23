@@ -49,6 +49,7 @@ try {
     // Change directory to the current SugarCRM application that we work on
     set_include_path($include_path);
     chdir($include_path);
+    define('sugarEntry', true);
 
     // Initalize autoloading features
     require_once "$autoload_path/autoload.php";
@@ -65,7 +66,6 @@ try {
 
     if (!empty($argv[1]) && $console->isApplicationCommand($argv[1])) {
         // Initialize SugarCRM
-        define('sugarEntry', true);
         require_once('include/entryPoint.php');
     }
 
