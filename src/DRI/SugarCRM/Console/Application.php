@@ -28,11 +28,18 @@ class Application
     private $app_path;
 
     /**
-     * @param string $app_path
+     * @var string
      */
-    public function __construct($app_path)
+    private $console_path;
+
+    /**
+     * @param string $app_path
+     * @param string $console_path
+     */
+    public function __construct($app_path, $console_path)
     {
         $this->app_path = $app_path;
+        $this->console_path = $console_path;
     }
 
     /**
@@ -41,6 +48,14 @@ class Application
     public function getAppPath()
     {
         return $this->app_path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConsolePath()
+    {
+        return $this->console_path;
     }
 
     /**

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./script/install-composer
+
+composer install

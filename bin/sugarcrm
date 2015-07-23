@@ -11,6 +11,7 @@ try {
     $base_path = realpath(__DIR__ . '/../../../..');
     $include_path = "$base_path/docroot";
     $autoload_path = "$base_path/vendor";
+    $console_path = dirname(__DIR__);
 
     $cwd = getcwd();
 
@@ -54,7 +55,11 @@ try {
 
     // Initalize and execute command
     $input = new ArgvInput($argv);
-    $sugar = new SugarApp($include_path);
+
+    $sugar = new SugarApp(
+        $include_path,
+        $console_path
+    );
 
     $console = new SugarConsole($sugar);
 
