@@ -14,9 +14,18 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class UpgradeCommand extends Command implements Command\SugarAwareCommand
 {
+    /**
+     * @var Sugar
+     */
+    private $sugar;
+
+    /**
+     *
+     */
     protected function configure()
     {
-        $this->setName('self-upgrade');
+        $this->setName('self-upgrade')
+            ->setDescription('Upgrades the sugarcrm-console to the latest version');
     }
 
     /**

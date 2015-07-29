@@ -98,6 +98,11 @@ class LanguageManager
         return $this->translateLabel($vName);
     }
 
+    /**
+     * @param string $label
+     *
+     * @return string
+     */
     public function translateLabel($label)
     {
         $label = preg_replace('/^LBL_/', '', $label);
@@ -124,6 +129,12 @@ class LanguageManager
 
         $missingLabels = array();
 
+        $defs = $bean->getFieldDefinitions();
+
+        if (empty($defs)) {
+            return array ();
+        }
+
         foreach ($bean->getFieldDefinitions() as $name => $def) {
             if (!empty($def['vname'])) {
                 $vName = $def['vname'];
@@ -142,6 +153,10 @@ class LanguageManager
 
         foreach ($baseLanguages as $baseLanguage) {
             $baseLabels = $this->getModuleLanguage($module, $baseLanguage, true);
+
+            if (empty($baseLabels)) {
+                continue;
+            }
 
             foreach ($baseLabels as $label => $translation) {
                 if (!isset($labels[$label]) && !isset($missingLabels[$label])) {
@@ -219,6 +234,33 @@ class LanguageManager
         }
 
         return $options;
+    }
+
+    /**
+     * @param $module
+     * @param $locale
+     * @param array $labels
+     */
+    public function addLabelsToDefaultExtFile($module, $locale, array $labels)
+    {
+        $extFilePath = "custom/Extension/modules/$module/Ext/Language/$locale.lang.php";
+
+        if (file_exists($extFilePath)) {
+            require $extFilePath;
+            $baseModStrings = $mod_strings;
+        } else {
+            $baseModStrings = array ();
+        }
+
+        $labels = array_merge($baseModStrings, $labels);
+
+        $content = "<?php\n\n";
+
+        foreach ($labels as $label => $translation) {
+            $content .= "\$mod_strings['$label'] = '$translation';\n";
+        }
+
+        file_put_contents($extFilePath, $content);
     }
 
     /**

@@ -19,12 +19,18 @@ class ValidateCommand extends ApplicationCommand
      */
     private $languageManager;
 
+    /**
+     * @param null $name
+     */
     public function __construct($name = null)
     {
         parent::__construct($name);
         $this->languageManager = new LanguageManager();
     }
 
+    /**
+     *
+     */
     protected function configure()
     {
         $this->setName('module:labels:validate')
@@ -34,6 +40,7 @@ class ValidateCommand extends ApplicationCommand
             ->addOption('format', 'fo', InputOption::VALUE_REQUIRED, '', 'array')
             ->addOption('variableName', 'vn', InputOption::VALUE_OPTIONAL, '', 'mod_strings')
             ->addOption('base', null, InputOption::VALUE_IS_ARRAY + InputOption::VALUE_REQUIRED, '', array('default'))
+            ->addOption('auto-fix', null, InputOption::VALUE_NONE)
             ->setDescription('Validates all labels in a module');
     }
 
@@ -69,6 +76,9 @@ class ValidateCommand extends ApplicationCommand
                     continue;
                 }
 
+                $bean = \BeanFactory::getBean($module);
+                if (!$bean || !($bean instanceof \SugarBean)) continue;
+
                 $missingLabels = $this->languageManager->getMissingLabelsInModule($module, $language, $local, $baseLanguages);
 
                 if (!empty($missingLabels)) {
@@ -85,6 +95,11 @@ class ValidateCommand extends ApplicationCommand
                             }
                             break;
                     }
+
+                    if ($input->getOption('auto-fix')) {
+                        $this->languageManager->addLabelsToDefaultExtFile($module, $language, $missingLabels);
+                    }
+
                 } else {
                     $output->writeln("<info>$module is ok in language $language:</info>");
                 }
