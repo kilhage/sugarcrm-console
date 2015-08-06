@@ -15,16 +15,16 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
     protected function configure()
     {
         $this->addOption(
-            'auto-execute',
+            'skip-db-upgrade',
             'a',
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_NONE,
             ''
         );
 
         $this->addOption(
             'output-html',
             'o',
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_NONE,
             ''
         );
     }
@@ -33,6 +33,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
     {
         require_once 'modules/Administration/QuickRepairAndRebuild.php';
         require_once 'include/utils/layout_utils.php';
+
         $repairandclear = new \RepairAndClear();
 
         return $repairandclear;
@@ -48,13 +49,13 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
     {
         $output->writeln($this->getMessage());
 
-        $auto_execute = $input->getOption('auto-execute');
-        $show_output = !!$input->getOption('output-html');
+        $auto_execute = !$input->getOption('skip-db-upgrade');
+        $show_output = $input->getOption('output-html');
 
         $this->getQuickRepairAndRebuild()->repairAndClearAll(
             $this->getActions(),
             $this->getActions(),
-            true,
+            $auto_execute,
             $show_output,
             ''
         );
