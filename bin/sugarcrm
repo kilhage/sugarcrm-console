@@ -11,6 +11,7 @@ try {
     $base_path = realpath(__DIR__ . '/../../../..');
     $include_path = "$base_path/docroot";
     $autoload_path = "$base_path/vendor";
+    $console_path = dirname(__DIR__);
 
     $cwd = getcwd();
 
@@ -48,19 +49,23 @@ try {
     // Change directory to the current SugarCRM application that we work on
     set_include_path($include_path);
     chdir($include_path);
+    define('sugarEntry', true);
 
     // Initalize autoloading features
     require_once "$autoload_path/autoload.php";
 
     // Initalize and execute command
     $input = new ArgvInput($argv);
-    $sugar = new SugarApp($include_path);
+
+    $sugar = new SugarApp(
+        $include_path,
+        $console_path
+    );
 
     $console = new SugarConsole($sugar);
 
     if (!empty($argv[1]) && $console->isApplicationCommand($argv[1])) {
         // Initialize SugarCRM
-        define('sugarEntry', true);
         require_once('include/entryPoint.php');
     }
 

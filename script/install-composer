@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if which composer >/dev/null; then
+    echo "Updating composer..."
+    composer self-update
+else
+    echo "Installing composer..."
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+fi
