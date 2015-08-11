@@ -23,6 +23,6 @@ class DatabaseCommand extends QuickRepairAndRebuildCommand
 
     protected function getMessage()
     {
-        return 'Repairing Database';
+        return '<info>Repairing Database</info>';
     }
 }

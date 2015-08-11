@@ -3,6 +3,7 @@
 namespace DRI\SugarCRM\Console\Command\Repair;
 
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
+use DRI\SugarCRM\Console\Command\SetOwnerCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,6 +26,20 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             'output-html',
             'o',
             InputOption::VALUE_OPTIONAL,
+            ''
+        );
+
+        $this->addOption(
+            'skip-set-owner',
+            null,
+            InputOption::VALUE_NONE,
+            ''
+        );
+
+        $this->addOption(
+            'skip-set-perm',
+            null,
+            InputOption::VALUE_NONE,
             ''
         );
     }
@@ -59,7 +74,21 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             ''
         );
 
-        $output->writeln('Done');
+        if (!$input->getOption('skip-set-owner')) {
+            $cmd = new SetOwnerCommand();
+            $cmd->setApplication($this->getApplication());
+            $cmd->setSugar($this->getSugar());
+            $cmd->run($input, $output);
+        }
+
+        if (!$input->getOption('skip-set-perm')) {
+            $cmd = new SetOwnerCommand();
+            $cmd->setApplication($this->getApplication());
+            $cmd->setSugar($this->getSugar());
+            $cmd->run($input, $output);
+        }
+
+        $output->writeln('<info>Done</info>');
     }
 
     protected function getModules()

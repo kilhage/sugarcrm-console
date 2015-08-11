@@ -1,6 +1,6 @@
 <?php
 
-namespace DRI\SugarCRM\Console\Command\Permissions;
+namespace DRI\SugarCRM\Console\Command;
 
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Emil Kilhage
  */
-class SetCommand extends ApplicationCommand
+class SetOwnerCommand extends ApplicationCommand
 {
     /**
      * @var InputInterface
@@ -27,11 +27,9 @@ class SetCommand extends ApplicationCommand
      */
     protected function configure()
     {
-        $this->setName('perm:set')
+        $this->setName('owner:set')
             ->addOption('dry', null, InputOption::VALUE_NONE)
-            ->addOption('only-owner', null, InputOption::VALUE_NONE)
-            ->addOption('file-mode', null, InputOption::VALUE_REQUIRED, '', 755)
-            ->setDescription('Corrects the local file permissions');
+            ->setDescription('Corrects the local file owner permissions');
     }
 
     /**
@@ -59,25 +57,17 @@ class SetCommand extends ApplicationCommand
 
             $this->exec("chown -R $str $path");
         }
-
-        if (!$input->getOption('only-owner')) {
-            $fileMode = $input->getOption('file-mode');
-
-            $output->writeln("<info>Changing file permissions to $fileMode</info>");
-            $this->exec("chmod -R $fileMode $path");
-        }
     }
 
     /**
-     * @param $comand
-     * @param bool $dry
+     * @param $command
      */
-    private function exec($comand)
+    private function exec($command)
     {
-        $this->output->writeln("<info>>>> $comand</info>");
+        $this->output->writeln("<info>>>> $command</info>");
 
         if (!$this->input->getOption('dry')) {
-            system($comand);
+            system($command);
         }
     }
 }

@@ -27,7 +27,7 @@ class CustomFieldsCommand extends ApplicationCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Repairing all custom tables');
+        $output->writeln('<info>Repairing all custom tables</info>');
 
         $dry = $input->getOption('dry');
 
@@ -60,6 +60,6 @@ class CustomFieldsCommand extends ApplicationCommand
             }
         }
 
-        $output->writeln('Done');
+        $output->writeln('<info>Done</info>');
     }
 }

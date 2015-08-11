@@ -23,6 +23,6 @@ class ExtensionsCommand extends QuickRepairAndRebuildCommand
 
     protected function getMessage()
     {
-        return 'Rebuilding Extensions';
+        return '<info>Rebuilding Extensions</info>';
     }
 }

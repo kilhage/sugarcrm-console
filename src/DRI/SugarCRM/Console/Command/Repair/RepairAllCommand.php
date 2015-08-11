@@ -23,6 +23,6 @@ class RepairAllCommand extends QuickRepairAndRebuildCommand
 
     protected function getMessage()
     {
-        return 'Running Quick Repair & Rebuild';
+        return '<info>Running Quick Repair & Rebuild</info>';
     }
 }
