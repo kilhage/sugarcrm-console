@@ -76,9 +76,8 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             ''
         );
 
-        $i = new ArgvInput(array ());
-
         if (!$input->getOption('skip-set-owner')) {
+            $i = new ArgvInput(array ('set:owner'));
             $cmd = new SetOwnerCommand();
             $cmd->setApplication($this->getApplication());
             $cmd->setSugar($this->getSugar());
@@ -86,6 +85,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
         }
 
         if (!$input->getOption('skip-set-perm')) {
+            $i = new ArgvInput(array ('set:perm'));
             $cmd = new SetOwnerCommand();
             $cmd->setApplication($this->getApplication());
             $cmd->setSugar($this->getSugar());
