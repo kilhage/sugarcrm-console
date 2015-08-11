@@ -52,22 +52,12 @@ class SetPermCommand extends ApplicationCommand
         $this->exec("find $docroot/config_override.php -type f -exec chmod 664 {} \\;");
         $this->exec("find $docroot/*.log -type f -exec chmod 664 {} \\;");
 
-        if (is_dir("$path/logs")) {
-            $this->exec("find $path/logs -type f -exec chmod 664 {} \\;");
-        }
-
-        if (is_dir("$docroot/logs") && $docroot != $path) {
-            $this->exec("find $docroot/logs -type f -exec chmod 664 {} \\;");
-        }
-
         if (is_dir("$path/bin")) {
-            $this->exec("chmod +x $path/bin/*");
+            $this->exec("find $path/bin -exec chmod -x {} +");
         }
 
         if (is_dir("$path/scripts")) {
-            $this->exec("chmod +x $path/scripts/*");
-            $this->exec("chmod +x $path/scripts/*/*");
-            $this->exec("chmod +x $path/scripts/*/*/*");
+            $this->exec("find $path/scripts -exec chmod -x {} +");
         }
 
         $this->exec("find $path -type d -exec chmod 755 {} \\;");
