@@ -5,7 +5,7 @@ namespace DRI\SugarCRM\Console\Command\Repair;
 /**
  * @author Emil Kilhage
  */
-class ClearDashletsCommand extends QuickRepairAndRebuildCommand
+class ClearThemeCacheCommand extends QuickRepairAndRebuildCommand
 {
     protected function configure()
     {
