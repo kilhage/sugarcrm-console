@@ -4,6 +4,7 @@ namespace DRI\SugarCRM\Console\Command\Repair;
 
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use DRI\SugarCRM\Console\Command\SetOwnerCommand;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -74,18 +75,20 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             ''
         );
 
+        $i = new ArgvInput(array ());
+
         if (!$input->getOption('skip-set-owner')) {
             $cmd = new SetOwnerCommand();
             $cmd->setApplication($this->getApplication());
             $cmd->setSugar($this->getSugar());
-            $cmd->run($input, $output);
+            $cmd->run($i, $output);
         }
 
         if (!$input->getOption('skip-set-perm')) {
             $cmd = new SetOwnerCommand();
             $cmd->setApplication($this->getApplication());
             $cmd->setSugar($this->getSugar());
-            $cmd->run($input, $output);
+            $cmd->run($i, $output);
         }
 
         $output->writeln('<info>Done</info>');
