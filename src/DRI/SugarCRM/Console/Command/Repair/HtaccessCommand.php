@@ -14,7 +14,7 @@ class HtaccessCommand extends ApplicationCommand
     protected function configure()
     {
         $this->setName('repair:htaccess')
-            ->setDescription('Clears tpls');
+            ->setDescription('Repairs the .htaccess file');
     }
 
     /**
