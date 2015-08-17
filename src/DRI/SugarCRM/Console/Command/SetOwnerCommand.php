@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SetOwnerCommand extends ApplicationCommand
 {
 
-    private const DEFAULT_OWNER = 'apache:apache';
+    const DEFAULT_OWNER = 'apache:apache';
     /**
      * @var InputInterface
      */
