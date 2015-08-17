@@ -52,7 +52,7 @@ class SetOwnerCommand extends ApplicationCommand
         $path = is_dir(dirname(SUGAR_BASE_DIR).'/docroot') ? dirname(SUGAR_BASE_DIR) : SUGAR_BASE_DIR;
 
         if (empty($str)) {
-            $output->writeln('<error>Missing user & group in config.php at default_permissions.user & default_permissions.group. Falling back to default owner: '.DEFAULT_OWNER.'</error>');
+            $output->writeln('<error>Missing user & group in config.php at default_permissions.user & default_permissions.group. Falling back to default owner: '.self::DEFAULT_OWNER.'</error>');
         } else {
             $output->writeln("<info>Changing owner of files to $str</info>");
 
