@@ -48,10 +48,6 @@ class SetPermCommand extends ApplicationCommand
 
         $this->exec("find $path -type f -exec chmod 644 {} \\;");
 
-        $this->exec("find $docroot/config.php -type f -exec chmod 664 {} \\;");
-        $this->exec("find $docroot/config_override.php -type f -exec chmod 664 {} \\;");
-        $this->exec("find $docroot/*.log -type f -exec chmod 664 {} \\;");
-
         if (is_dir("$path/bin")) {
             $this->exec("find $path/bin -exec chmod +x {} \\;");
         }
@@ -62,18 +58,6 @@ class SetPermCommand extends ApplicationCommand
 
         $this->exec("find $path -type d -exec chmod 755 {} \\;");
 
-        $writableDocrootDirs = array (
-            "cache",
-            "custom",
-            "data",
-            "modules",
-            "include",
-            "upload",
-        );
-
-        foreach ($writableDocrootDirs as $writableDocrootDir) {
-            $this->exec("find $docroot/$writableDocrootDir -type d -exec chmod 775 {} \\;");
-        }
     }
 
     /**
