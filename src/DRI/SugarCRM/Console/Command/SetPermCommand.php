@@ -68,7 +68,7 @@ class SetPermCommand extends ApplicationCommand
         $this->output->writeln("<info>>>> $command</info>");
 
         if (!$this->input->getOption('dry')) {
-            system($command);
+            $this->output->writeln("<info>".system("time -f 'time: %E real %S sys' $command|grep time:")."</info>");
         }
     }
 }
