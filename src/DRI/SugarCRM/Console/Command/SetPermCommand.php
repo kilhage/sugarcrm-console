@@ -57,7 +57,6 @@ class SetPermCommand extends ApplicationCommand
         }
 
         $this->exec("find $path -type d -exec chmod 755 {} \\;");
-
     }
 
     /**
@@ -68,7 +67,7 @@ class SetPermCommand extends ApplicationCommand
         $this->output->writeln("<info>>>> $command</info>");
 
         if (!$this->input->getOption('dry')) {
-            $this->output->writeln("<info>".system("time -f 'time: %E real %S sys' $command|grep time:")."</info>");
+            system("$command");
         }
     }
 }
