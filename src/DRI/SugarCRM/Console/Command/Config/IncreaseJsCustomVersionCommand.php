@@ -47,5 +47,8 @@ class IncreaseJsCustomVersionCommand extends ApplicationCommand
         $sugar_config['js_lang_version'] = $jsLangVersion;
 
         rebuildConfigFile($sugar_config, $sugar_version);
+
+        sugar_chown('config.php');
+        sugar_chgrp('config.php');
     }
 }
