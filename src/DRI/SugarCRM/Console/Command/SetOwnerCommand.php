@@ -51,7 +51,16 @@ class SetOwnerCommand extends ApplicationCommand
         $path = is_dir(dirname(SUGAR_BASE_DIR).'/docroot') ? dirname(SUGAR_BASE_DIR) : SUGAR_BASE_DIR;
 
         if (empty($str)) {
-            $output->writeln('<error>Missing user & group in config.php at default_permissions.user & default_permissions.group</error>');
+
+            $message = <<<TXT
+Add the following settings to the config_override.php, just make sure to change the group & owner to the right ones!
+
+\$sugar_config['default_permissions']['user'] = 'apache';
+\$sugar_config['default_permissions']['group'] = 'apache';
+
+TXT;
+
+            $output->writeln("<error>$message</error>");
         } else {
             $output->writeln("<info>Changing owner of files to $str</info>");
 
