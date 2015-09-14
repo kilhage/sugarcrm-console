@@ -43,7 +43,7 @@ class SetPermCommand extends ApplicationCommand
         $this->output = $output;
         $this->input = $input;
 
-        $path = is_dir(dirname(SUGAR_BASE_DIR).'/docroot') ? dirname(SUGAR_BASE_DIR) : SUGAR_BASE_DIR;
+        $path = is_dir(dirname(SUGAR_PATH).'/docroot') ? dirname(SUGAR_PATH) : SUGAR_PATH;
         $docroot = is_dir("$path/docroot") ? "$path/docroot" : $path;
 
         $this->exec("find $path -type f -exec chmod 644 {} \\;");
