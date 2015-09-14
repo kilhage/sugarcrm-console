@@ -75,30 +75,10 @@ class Application
     /**
      *
      */
-    public function loadDatabase()
-    {
-        global $db;
-
-        if (empty($db)) {
-            $db = \DBManagerFactory::getInstance();
-        }
-
-        $this->db = $db;
-    }
-
-    /**
-     *
-     */
-    public function pauseTracker()
-    {
-        \TrackerManager::getInstance()->pause();
-    }
-
-    /**
-     *
-     */
     public function start()
     {
+        Bootstrap::boot();
+
         require_once 'include/MVC/SugarApplication.php';
 
         global $current_module, $currentModule;

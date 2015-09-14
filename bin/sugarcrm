@@ -64,11 +64,6 @@ try {
 
     $console = new SugarConsole($sugar);
 
-    if (!empty($argv[1]) && $console->isApplicationCommand($argv[1])) {
-        // Initialize SugarCRM
-        require_once('include/entryPoint.php');
-    }
-
     $console->run($input);
 } catch (\Exception $e) {
     if (in_array('--verbose', $argv) || in_array('-v', $argv) || in_array('-vv', $argv) || in_array('-vvv', $argv)) {

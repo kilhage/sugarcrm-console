@@ -27,16 +27,15 @@ abstract class ApplicationCommand extends Command implements SugarAwareCommand
 
         $sugar = $this->getSugar();
 
+        $sugar->start();
+
         $current_user_id = $input->getOption('current_user');
+
         if (!empty($current_user_id)) {
             $sugar->loadCurrentUser($current_user_id);
         } else {
             $sugar->loadCurrentUser();
         }
-
-        $sugar->loadDatabase();
-        $sugar->pauseTracker();
-        $sugar->start();
     }
 
     /**

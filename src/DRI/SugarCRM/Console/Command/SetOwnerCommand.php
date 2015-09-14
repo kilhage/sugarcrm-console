@@ -48,7 +48,7 @@ class SetOwnerCommand extends ApplicationCommand
 
         $str = !empty($group) && !empty($user) ? "$user:$group" : (!empty($user) ? $user : null);
 
-        $path = is_dir(dirname(SUGAR_BASE_DIR).'/docroot') ? dirname(SUGAR_BASE_DIR) : SUGAR_BASE_DIR;
+        $path = is_dir(dirname(SUGAR_PATH).'/docroot') ? dirname(SUGAR_PATH) : SUGAR_PATH;
 
         if (empty($str)) {
 

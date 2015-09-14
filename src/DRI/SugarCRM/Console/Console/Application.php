@@ -2,14 +2,10 @@
 
 namespace DRI\SugarCRM\Console\Console;
 
-use DRI\SugarCRM\Console\Command\ApplicationCommand;
 use DRI\SugarCRM\Console\Command\SugarAwareCommand;
 use DRI\SugarCRM\Console\Application as Sugar;
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -21,11 +17,6 @@ class Application extends BaseApplication
      * @var Sugar
      */
     private $sugar;
-
-    /**
-     * @var array
-     */
-    private $commands = array();
 
     /**
      * @param Sugar $sugar
@@ -40,17 +31,6 @@ class Application extends BaseApplication
         $this->getDefinition()->addOption(new InputOption('--current_user', null, InputOption::VALUE_OPTIONAL, 'The current user id to run the script under'));
 
         $this->registerCommands();
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    public function doRun(InputInterface $input, OutputInterface $output)
-    {
-        return parent::doRun($input, $output);
     }
 
     /**
@@ -89,46 +69,13 @@ class Application extends BaseApplication
                 }
 
                 $this->add($command);
-
-                $this->commands[$command->getName()] = $command;
             }
         }
     }
 
-    /**
-     * @return array
-     */
-    private function getCommands()
+    public function getSugar()
     {
-        return $this->commands;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return \DRI\SugarCRM\Console\Command
-     *
-     * @throws \LogicException
-     */
-    private function getCommand($name)
-    {
-        if (!isset($this->commands[$name])) {
-            throw new \LogicException("Invalid command name: {$name}");
-        }
-
-        return $this->commands[$name];
-    }
-
-    /**
-     * @param $command_name
-     *
-     * @return bool
-     */
-    public function isApplicationCommand($command_name)
-    {
-        $command = $this->getCommand($command_name);
-
-        return $command instanceof ApplicationCommand;
+        return $this->sugar;
     }
 
     /**
@@ -155,13 +102,5 @@ class Application extends BaseApplication
         }
 
         return $commands;
-    }
-
-    /**
-     * @return Sugar
-     */
-    public function getSugar()
-    {
-        return $this->sugar;
     }
 }
