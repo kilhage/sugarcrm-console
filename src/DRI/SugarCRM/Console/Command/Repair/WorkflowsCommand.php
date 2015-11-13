@@ -1,21 +1,20 @@
 <?php
 
-namespace DRI\SugarCRM\Console\Command\Workflows;
+namespace DRI\SugarCRM\Console\Command\Repair;
 
 use DRI\SugarCRM\Console\Command\ApplicationCommand;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Emil Kilhage
  */
-class RepairCommand extends ApplicationCommand
+class WorkflowsCommand extends ApplicationCommand
 {
     protected function configure()
     {
-        $this->setName('workflows:repair');
-        $this->setDescription('Repairs the workflows files');
+        $this->setName('repair:workflows')
+            ->setDescription('Repairs the workflows files');
     }
 
     /**
