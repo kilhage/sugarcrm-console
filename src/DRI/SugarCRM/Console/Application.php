@@ -61,12 +61,14 @@ class Application
     /**
      * @param int $current_user_id
      */
-    public function loadCurrentUser($current_user_id = 1)
+    public function loadCurrentUser($current_user_id = null)
     {
         global $current_user;
 
-        if (empty($current_user->id)) {
+        if (empty($current_user->id) && !empty($current_user_id)) {
             $current_user->retrieve($current_user_id);
+        } elseif (empty($current_user->id)) {
+            $current_user->getSystemUser();
         }
 
         $this->current_user = $current_user;
