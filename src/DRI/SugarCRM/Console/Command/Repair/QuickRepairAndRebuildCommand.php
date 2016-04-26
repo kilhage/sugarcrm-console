@@ -71,7 +71,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
 
         $this->getQuickRepairAndRebuild()->repairAndClearAll(
             $this->getActions(),
-            $this->getActions(),
+            $this->getModules(),
             $auto_execute,
             $show_output,
             ''
@@ -98,6 +98,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
 
     protected function getModules()
     {
+        return array(translate('LBL_ALL_MODULES'));
     }
 
     abstract protected function getActions();
