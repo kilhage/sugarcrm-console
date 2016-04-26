@@ -74,6 +74,55 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
         $this->clearJsGroupingFiles();
         $this->clearLessFiles();
         $this->clearAutoloaderCache();
+        $this->clearApplication();
+        $this->clearExtCache();
+    }
+
+    /**
+     *
+     */
+    public function clearApplication()
+    {
+        $this->output->writeln('Clearing application cache');
+
+        $app_path = $this->getSugar()->getAppPath();
+
+        $directory = sprintf('%s/custom/application', $app_path);
+
+        if ($this->filesystem->exists($directory)) {
+            $finder = new Finder();
+            $files = $finder->files()
+                ->name('*.php')
+                ->in($directory);
+
+            foreach ($files as $file) {
+                $this->clearFileIfExists($file);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public function clearExtCache()
+    {
+        $this->output->writeln('Clearing extension cache');
+
+        $app_path = $this->getSugar()->getAppPath();
+
+        $custom = sprintf('%s/custom/modules', $app_path);
+        $directory = sprintf('%s/*/Ext', $custom);
+
+        if ($this->filesystem->exists($custom)) {
+            $finder = new Finder();
+            $files = $finder->files()
+                ->name('*.php')
+                ->in($directory);
+
+            foreach ($files as $file) {
+                $this->clearFileIfExists($file);
+            }
+        }
     }
 
     /**
@@ -81,7 +130,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearComponentsFiles()
     {
-        $this->output->writeln('Clearing Components Cache');
+        $this->output->writeln('Clearing components cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
@@ -104,7 +153,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearJsGroupingFiles()
     {
-        $this->output->writeln('Clearing Js Grouping Cache');
+        $this->output->writeln('Clearing js grouping cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
@@ -127,7 +176,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearLessFiles()
     {
-        $this->output->writeln('Clearing Less Cache');
+        $this->output->writeln('Clearing less cache');
 
         $app_path = $this->getSugar()->getAppPath();
 
@@ -150,7 +199,7 @@ class ClearCommand extends Command implements Command\SugarAwareCommand
      */
     private function clearAutoloaderCache()
     {
-        $this->output->writeln('Clearing Autoloader Cache');
+        $this->output->writeln('Clearing autoloader cache');
 
         $app_path = $this->getSugar()->getAppPath();
         $files = array(
