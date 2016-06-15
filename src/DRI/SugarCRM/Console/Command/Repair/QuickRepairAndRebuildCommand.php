@@ -77,6 +77,10 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             ''
         );
 
+        ob_start();
+        require 'modules/Administration/RebuildRelationship.php';
+        $content = ob_get_clean();
+
         if (!$input->getOption('skip-set-owner')) {
             $i = new ArgvInput(array ('bin/sugarcrm', 'set:owner'));
             $cmd = new SetOwnerCommand();
