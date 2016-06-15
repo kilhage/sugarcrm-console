@@ -14,7 +14,7 @@ class RelationshipsCommand extends ApplicationCommand
     protected function configure()
     {
         $this->setName('repair:relationships')
-            ->setDescription('Repairs the JS Grouping files');
+            ->setDescription('Repairs the relationship cache');
     }
 
     /**
