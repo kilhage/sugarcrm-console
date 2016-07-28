@@ -44,6 +44,17 @@ class Application extends BaseApplication
         );
     }
 
+    public function addCommands(array $commands)
+    {
+        parent::addCommands($commands);
+
+        foreach ($commands as $command) {
+            if ($command instanceof SugarAwareCommand) {
+                $command->setSugar($this->sugar);
+            }
+        }
+    }
+
     /**
      * @param array|\Symfony\Component\Console\Command\Command[] $prefix
      * @param $dir

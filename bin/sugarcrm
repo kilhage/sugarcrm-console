@@ -64,8 +64,8 @@ try {
 
     $console = new SugarConsole($sugar);
 
-    if (file_exists('commands.php')) {
-        $commands = require 'commands.php';
+    if (file_exists(getcwd().'/../commands.php')) {
+        $commands = require getcwd().'/../commands.php';
         $console->addCommands($commands);
     }
 
