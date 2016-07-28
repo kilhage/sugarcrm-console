@@ -64,6 +64,11 @@ try {
 
     $console = new SugarConsole($sugar);
 
+    if (file_exists('commands.php')) {
+        $commands = require 'commands.php';
+        $console->addCommands($commands);
+    }
+
     $console->run($input);
 } catch (\Exception $e) {
     if (in_array('--verbose', $argv) || in_array('-v', $argv) || in_array('-vv', $argv) || in_array('-vvv', $argv)) {
