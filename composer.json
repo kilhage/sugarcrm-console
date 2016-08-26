@@ -25,6 +25,7 @@
         "psr-4": {
             "DRI\\SugarCRM\\Console\\": "src/DRI/SugarCRM/Console",
             "DRI\\SugarCRM\\Language\\": "src/DRI/SugarCRM/Language",
+            "DRI\\SugarCRM\\Generator\\": "src/DRI/SugarCRM/Generator",
             "DRI\\SugarCRM\\Module\\": "src/DRI/SugarCRM/Module"
         }
     },
