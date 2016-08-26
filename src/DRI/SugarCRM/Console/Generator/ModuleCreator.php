@@ -90,8 +90,6 @@ class ModuleCreator
             $arguments['translation_singular'] = self::translate($arguments['object_name']);
         }
 
-        var_dump($arguments);
-
         return $arguments;
     }
 
