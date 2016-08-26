@@ -32,15 +32,15 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
         );
 
         $this->addOption(
-            'skip-set-owner',
-            null,
+            'owner',
+            'O',
             InputOption::VALUE_NONE,
             ''
         );
 
         $this->addOption(
-            'skip-set-perm',
-            null,
+            'perm',
+            'P',
             InputOption::VALUE_NONE,
             ''
         );
@@ -50,10 +50,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
     {
         require_once 'modules/Administration/QuickRepairAndRebuild.php';
         require_once 'include/utils/layout_utils.php';
-
-        $repairandclear = new \RepairAndClear();
-
-        return $repairandclear;
+        return new \RepairAndClear();
     }
 
     /**
@@ -81,7 +78,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
         require 'modules/Administration/RebuildRelationship.php';
         $content = ob_get_clean();
 
-        if (!$input->getOption('skip-set-owner')) {
+        if ($input->getOption('owner')) {
             $i = new ArgvInput(array ('bin/sugarcrm', 'set:owner'));
             $cmd = new SetOwnerCommand();
             $cmd->setApplication($this->getApplication());
@@ -89,7 +86,7 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
             $cmd->run($i, $output);
         }
 
-        if (!$input->getOption('skip-set-perm')) {
+        if ($input->getOption('perm')) {
             $i = new ArgvInput(array ('bin/sugarcrm', 'set:perm'));
             $cmd = new SetPermCommand();
             $cmd->setApplication($this->getApplication());

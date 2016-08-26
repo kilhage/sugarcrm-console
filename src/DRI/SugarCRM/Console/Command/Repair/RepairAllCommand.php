@@ -11,7 +11,7 @@ class RepairAllCommand extends QuickRepairAndRebuildCommand
     {
         parent::configure();
         $this->setName('repair:all')
-            ->setDescription('Repairs the extensions');
+            ->setDescription('');
     }
 
     protected function getActions()
