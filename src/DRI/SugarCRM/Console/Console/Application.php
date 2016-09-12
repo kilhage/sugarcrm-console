@@ -25,7 +25,7 @@ class Application extends BaseApplication
     {
         $this->sugar = $sugar;
 
-        parent::__construct('SugarCRM-Console', '0.21.0');
+        parent::__construct('SugarCRM-Console', '0.22.1');
 
         $this->getDefinition()->addOption(new InputOption('--sugar_path', null, InputOption::VALUE_OPTIONAL, 'Path to SugarCRM Application'));
         $this->getDefinition()->addOption(new InputOption('--current_user', null, InputOption::VALUE_OPTIONAL, 'The current user id to run the script under'));
