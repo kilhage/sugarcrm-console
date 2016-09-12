@@ -7,7 +7,7 @@ $viewdefs[$moduleName]['base']['menu']['header'] = array (
         'label' => 'LNK_NEW_RECORD',
         'acl_action' => 'create',
         'acl_module' => $moduleName,
-        'icon' => 'icon-plus',
+        'icon' => 'fa-plus icon-plus',
         'route' => '#' . $moduleName . '/create',
     ),
     array (
@@ -15,6 +15,6 @@ $viewdefs[$moduleName]['base']['menu']['header'] = array (
         'label' => 'LNK_VIEW_RECORDS',
         'acl_action' => 'list',
         'acl_module' => $moduleName,
-        'icon' => 'icon-reorder',
+        'icon' => 'fa-reorder icon-reorder',
     ),
 );
