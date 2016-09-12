@@ -17,7 +17,6 @@ $viewdefs[$module_name]['base']['view']['list'] = array (
                 array (
                     'name' => 'team_name',
                     'label' => 'LBL_TEAM',
-                    'width' => 9,
                     'default' => false,
                     'enabled' => true,
                 ),
@@ -26,7 +25,6 @@ $viewdefs[$module_name]['base']['view']['list'] = array (
                 array (
                     'name' => 'assigned_user_name',
                     'label' => 'LBL_ASSIGNED_TO_NAME',
-                    'width' => 9,
                     'default' => true,
                     'enabled' => true,
                     'link' => true,
