@@ -61,6 +61,8 @@ abstract class QuickRepairAndRebuildCommand extends ApplicationCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        global $mod_strings;
+
         $output->writeln($this->getMessage());
 
         $auto_execute = !$input->getOption('skip-db-upgrade');
