@@ -58,7 +58,7 @@ class ToFilesCommand extends ApplicationCommand
                 $content = <<<PHP
 <?php
 
-\$dictionary['$object_name']['custom_fields'] = true:
+\$dictionary['$object_name']['custom_fields'] = true;
 \$dictionary['$object_name']['fields']['$field_name'] = $def_str;
 
 PHP;
