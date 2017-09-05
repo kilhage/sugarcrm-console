@@ -99,6 +99,7 @@ class ModuleCreator
      */
     public static function translate($module)
     {
+        $module = str_replace('ARK_', '', $module);
         $module = str_replace('DRI_', '', $module);
         $module = preg_replace('/([a-z]{1})([A-Z]{1})/', '$1 $2', $module);
         return $module;
